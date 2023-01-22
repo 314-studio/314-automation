@@ -10,15 +10,15 @@ env:
  BRANCH_NAME: ${{ github.head_ref || github.ref_name }} 
 
 jobs:
-  hello_world_job:
+  attach_pr_to_trello:
     runs-on: ubuntu-latest
-    name: test trello github action
+    name: Attach GitHub pull request to Trello cards
     steps:
       - name: Checkout
         uses: actions/checkout@v3
-      - name: Hello world action step
+      - name: Attach PR to Trello
         uses: ./
-        id: test1
+        id: p1
         with:
           trello-key: ${{ secrets.TRELLO_API_KEY }}
           trello-token: ${{ secrets.TRELLO_TOKEN }}
