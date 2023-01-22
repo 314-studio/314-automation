@@ -1,4 +1,10 @@
-on: [push, pull_request]
+on:
+  push:
+    branches:
+    - main
+  pull_request:
+    branches:
+    - main
 
 jobs:
   hello_world_job:
@@ -11,7 +17,7 @@ jobs:
         uses: actions/checkout@v3
       - name: Hello world action step
         uses: ./ # Uses an action in the root directory
-        id: test
+        id: test1
       # Use the output from the `hello` step
       - name: Get the output time
-        run: echo "The time was ${{ steps.hello.outputs.time }}"
+        run: echo "The time was ${{ steps.test1.outputs.time }}"
