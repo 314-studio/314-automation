@@ -31,6 +31,8 @@ function buildTrelloRequestUrl(query, entity, params) {
         }
     }
 
+    core.info(`Making request to ${url}`);
+
     return url + `key=${TRELLO_API_KEY}&token=${TRELLO_TOKEN}`
 }
 
@@ -84,8 +86,6 @@ async function getTrelloCardAttachments(cardId) {
         id: cardId,
         type: 'attachments'
     }, null);
-
-    console.log(fetchUrl);
 
     var response = await fetch(fetchUrl, {
         method: 'GET',
