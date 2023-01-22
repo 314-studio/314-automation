@@ -9598,7 +9598,6 @@ function wrappy (fn, cb) {
 /***/ 6871:
 /***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
 
-const { response } = __nccwpck_require__(1335);
 const fetch = __nccwpck_require__(2460);
 
 /*
@@ -9728,14 +9727,6 @@ exports.attachPullResuest = attachPullResuest;
 /***/ ((module) => {
 
 module.exports = eval("require")("encoding");
-
-
-/***/ }),
-
-/***/ 1335:
-/***/ ((module) => {
-
-module.exports = eval("require")("express");
 
 
 /***/ }),

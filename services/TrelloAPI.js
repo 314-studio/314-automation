@@ -1,4 +1,3 @@
-const { response } = require('express');
 const fetch = require('node-fetch');
 
 /*
