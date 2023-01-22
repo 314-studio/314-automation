@@ -1,0 +1,15 @@
+name: '314 Trello Automation Action'
+description: 'Attach Pull request and Branch to Trello card.'
+# inputs:
+#   branch-name:
+#     description: 'git branch name, should be the same as Trello card title prefix'
+#     required: true
+#   pr-url:
+#     description: 'url of the pull request'
+#     required: true
+outputs:
+  time: # id of output
+    description: 'The time we greeted you'
+runs:
+  using: 'node16'
+  main: 'app.js'
