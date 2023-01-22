@@ -6,6 +6,9 @@ on:
     branches:
     - main
 
+env:
+ BRANCH_NAME: ${{ github.head_ref || github.ref_name }} 
+
 jobs:
   hello_world_job:
     runs-on: ubuntu-latest

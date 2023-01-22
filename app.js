@@ -3,17 +3,13 @@ const github = require('@actions/github');
 const TrelloAutomation = require('./services/TrelloAutomation');
 
 try {
-//   const branchName = core.getInput('branch-name');
-//   const prUrl = core.getInput('pr-url');
-//   console.log(`Targeted branch ${branchName}, PR link ${prUrl}.`);
+    const time = (new Date()).toTimeString();
+    core.setOutput("time", time);
 
-  // async () => await TrelloAutomation.attachPullResuest(branchName, prUrl)
-
-  const time = (new Date()).toTimeString();
-  core.setOutput("time", time);
-  // Get the JSON webhook payload for the event that triggered the workflow
-  const payload = JSON.stringify(github.context.payload, undefined, 2)
-  console.log(`The event payload: ${payload}`);
+    const payload = github.context.payload;
+    console.log(payload.pull_request.url);
+    console.log(process.env.BRANCH_NAME);
+    async () => await TrelloAutomation.attachPullResuest(process.env.BRANCH_NAME, payload.pull_request.url);
 } catch (error) {
-  core.setFailed(error.message);
+    core.setFailed(error.message);
 }
