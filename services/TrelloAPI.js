@@ -48,7 +48,7 @@ async function getCardByBranchName(branchName) {
         }
     }).catch(async err => {
         console.error(err);
-        return await err.response.text();
+        return "Trello API: " + await err.response.text();
     });
 
     return await response.json();
@@ -71,10 +71,9 @@ async function attachTrelloUrlAttachment(cardId, url) {
         }
     }).catch(async err => {
         console.error(err);
-        return await err.response.text();
+        return "Trello API: " + await err.response.text();
     });
 
-    console.log(response);
     return response;
 }
 

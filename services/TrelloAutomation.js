@@ -8,7 +8,10 @@ async function attachPullResuest(branchName, prUrl) {
             var card = cardData.cards[0];
             if (card.idShort === parseInt(branchName.split('-')[1])) {
                 var result = await TrelloAutomation.attachTrelloUrlAttachment(card.id, prUrl);
-                return { ...card, success: true, msg: msg + " " + card.shortUrl }
+                if (result.id) {
+                    return { ...card, success: true, msg: msg + " " + card.shortUrl }
+                }
+                return { success: false, msg: result };
             } else {
                 return { success: false, msg: `找到卡片但无法匹配卡片ID:${branchName}.`};
             }

@@ -9648,7 +9648,7 @@ async function getCardByBranchName(branchName) {
         }
     }).catch(async err => {
         console.error(err);
-        return await err.response.text();
+        return "Trello API: " + await err.response.text();
     });
 
     return await response.json();
@@ -9671,10 +9671,9 @@ async function attachTrelloUrlAttachment(cardId, url) {
         }
     }).catch(async err => {
         console.error(err);
-        return await err.response.text();
+        return "Trello API: " + await err.response.text();
     });
 
-    console.log(response);
     return response;
 }
 
@@ -9696,7 +9695,10 @@ async function attachPullResuest(branchName, prUrl) {
             var card = cardData.cards[0];
             if (card.idShort === parseInt(branchName.split('-')[1])) {
                 var result = await TrelloAutomation.attachTrelloUrlAttachment(card.id, prUrl);
-                return { ...card, success: true, msg: msg + " " + card.shortUrl }
+                if (result.id) {
+                    return { ...card, success: true, msg: msg + " " + card.shortUrl }
+                }
+                return { success: false, msg: result };
             } else {
                 return { success: false, msg: `找到卡片但无法匹配卡片ID:${branchName}.`};
             }
@@ -9904,17 +9906,22 @@ const core = __nccwpck_require__(6024);
 const github = __nccwpck_require__(5016);
 const TrelloAutomation = __nccwpck_require__(8474);
 
-try {
-    const time = (new Date()).toTimeString();
-    core.setOutput("time", time);
+(async () => {
+    try {
+        const payload = github.context.payload;
+        core.info(`Branch name: ${process.env.BRANCH_NAME}, pull request URL: payload.pull_request.url`);
+        var result = await TrelloAutomation.attachPullResuest(process.env.BRANCH_NAME, payload.pull_request.url);
+        if (result.success) {
+            core.info(`Successfully attached PR to card. \n ${JSON.stringify(result.card)}`);
+        } else {
+            core.error(result);
+            core.setFailed(result);
+        }
+    } catch (error) {
+        core.setFailed(error.message);
+    }
+})();
 
-    const payload = github.context.payload;
-    console.log(payload.pull_request.url);
-    console.log(process.env.BRANCH_NAME);
-    async () => await TrelloAutomation.attachPullResuest(process.env.BRANCH_NAME, payload.pull_request.url);
-} catch (error) {
-    core.setFailed(error.message);
-}
 })();
 
 module.exports = __webpack_exports__;

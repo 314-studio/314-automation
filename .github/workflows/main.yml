@@ -14,13 +14,12 @@ jobs:
     runs-on: ubuntu-latest
     name: test trello github action
     steps:
-      # To use this repository's private action,
-      # you must check out the repository
       - name: Checkout
         uses: actions/checkout@v3
       - name: Hello world action step
-        uses: ./ # Uses an action in the root directory
-        id: test1
-      # Use the output from the `hello` step
-      - name: Get the output time
-        run: echo "The time was ${{ steps.test1.outputs.time }}"
+        uses: ./
+        id: test
+          with:
+            trello-key: ${{ secrets.TRELLO_API_KEY }}
+            trello-token: ${{ secrets.TRELLO_TOKEN }}
+            trello-api-base: ${{ vars.TRELLO_API_BASE_URL }}
