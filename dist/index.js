@@ -9618,6 +9618,7 @@ function buildTrelloRequestUrl(query, entity, params) {
         for (var key in query) {
             url += `${key}:"${query[key]}"`;
         }
+        url += '&';
     }
 
     if (entity) {
@@ -9626,11 +9627,11 @@ function buildTrelloRequestUrl(query, entity, params) {
 
     if (params) {
         for (var key in params) {
-            url += `&${key}=${params[key]}`;
+            url += `${key}=${params[key]}&`;
         }
     }
 
-    return url + `&key=${TRELLO_API_KEY}&token=${TRELLO_TOKEN}`
+    return url + `key=${TRELLO_API_KEY}&token=${TRELLO_TOKEN}`
 }
 
 async function getCardByBranchName(branchName) {
