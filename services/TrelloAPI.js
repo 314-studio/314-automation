@@ -1,4 +1,5 @@
 const fetch = require('node-fetch');
+const core = require('@actions/core');
 
 /*
  * @param {object} params api query paramters to merge in the request url
@@ -6,9 +7,9 @@ const fetch = require('node-fetch');
  * api references https://developer.atlassian.com/cloud/trello/rest/api-group-search/#api-search-get
  */
 function buildTrelloRequestUrl(query, entity, params) {
-    var TRELLO_API_KEY = process.env.TRELLO_API_KEY;
-    var TRELLO_TOKEN = process.env.TRELLO_TOKEN;
-    var TRELLO_API_BASE_URL = process.env.TRELLO_API_BASE_URL;
+    var TRELLO_API_KEY = core.getInput('trello-key', { required: true });
+    var TRELLO_TOKEN = core.getInput('trello-token', { required: true });
+    var TRELLO_API_BASE_URL = core.getInput('trello-api-base', { required: true });
 
     var url = TRELLO_API_BASE_URL;
 
@@ -17,6 +18,7 @@ function buildTrelloRequestUrl(query, entity, params) {
         for (var key in query) {
             url += `${key}:"${query[key]}"`;
         }
+        url += '&';
     }
 
     if (entity) {
@@ -25,11 +27,13 @@ function buildTrelloRequestUrl(query, entity, params) {
 
     if (params) {
         for (var key in params) {
-            url += `&${key}=${params[key]}`;
+            url += `${key}=${params[key]}&`;
         }
     }
 
-    return url + `&key=${TRELLO_API_KEY}&token=${TRELLO_TOKEN}`
+    core.info(`Making request to ${url}`);
+
+    return url + `key=${TRELLO_API_KEY}&token=${TRELLO_TOKEN}`
 }
 
 async function getCardByBranchName(branchName) {
@@ -48,7 +52,7 @@ async function getCardByBranchName(branchName) {
         }
     }).catch(async err => {
         console.error(err);
-        return await err.response.text();
+        return "Trello API: " + await err.response.text();
     });
 
     return await response.json();
@@ -63,7 +67,6 @@ async function attachTrelloUrlAttachment(cardId, url) {
     }, {
         url: url
     });
-    console.log(fetchUrl);
     var response = await fetch(fetchUrl, {
         method: 'POST',
         headers: {
@@ -71,12 +74,32 @@ async function attachTrelloUrlAttachment(cardId, url) {
         }
     }).catch(async err => {
         console.error(err);
-        return await err.response.text();
+        return "Trello API: " + await err.response.text();
     });
 
-    console.log(response);
-    return response;
+    return await response.json();
+}
+
+async function getTrelloCardAttachments(cardId) {
+    var fetchUrl = buildTrelloRequestUrl(null, {
+        name: 'cards',
+        id: cardId,
+        type: 'attachments'
+    }, null);
+
+    var response = await fetch(fetchUrl, {
+        method: 'GET',
+        headers: {
+            'Accept': 'application/json'
+        }
+    }).catch(async err => {
+        console.error(err);
+        return "Trello API: " + await err.response.text();
+    });
+
+    return await response.json();
 }
 
 exports.getCardByBranchName = getCardByBranchName;
 exports.attachTrelloUrlAttachment = attachTrelloUrlAttachment;
+exports.getTrelloCardAttachments = getTrelloCardAttachments;

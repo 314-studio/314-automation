@@ -9599,6 +9599,7 @@ function wrappy (fn, cb) {
 /***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
 
 const fetch = __nccwpck_require__(2460);
+const core = __nccwpck_require__(6024);
 
 /*
  * @param {object} params api query paramters to merge in the request url
@@ -9606,9 +9607,9 @@ const fetch = __nccwpck_require__(2460);
  * api references https://developer.atlassian.com/cloud/trello/rest/api-group-search/#api-search-get
  */
 function buildTrelloRequestUrl(query, entity, params) {
-    var TRELLO_API_KEY = process.env.TRELLO_API_KEY;
-    var TRELLO_TOKEN = process.env.TRELLO_TOKEN;
-    var TRELLO_API_BASE_URL = process.env.TRELLO_API_BASE_URL;
+    var TRELLO_API_KEY = core.getInput('trello-key', { required: true });
+    var TRELLO_TOKEN = core.getInput('trello-token', { required: true });
+    var TRELLO_API_BASE_URL = core.getInput('trello-api-base', { required: true });
 
     var url = TRELLO_API_BASE_URL;
 
@@ -9617,6 +9618,7 @@ function buildTrelloRequestUrl(query, entity, params) {
         for (var key in query) {
             url += `${key}:"${query[key]}"`;
         }
+        url += '&';
     }
 
     if (entity) {
@@ -9625,11 +9627,13 @@ function buildTrelloRequestUrl(query, entity, params) {
 
     if (params) {
         for (var key in params) {
-            url += `&${key}=${params[key]}`;
+            url += `${key}=${params[key]}&`;
         }
     }
 
-    return url + `&key=${TRELLO_API_KEY}&token=${TRELLO_TOKEN}`
+    core.info(`Making request to ${url}`);
+
+    return url + `key=${TRELLO_API_KEY}&token=${TRELLO_TOKEN}`
 }
 
 async function getCardByBranchName(branchName) {
@@ -9648,7 +9652,7 @@ async function getCardByBranchName(branchName) {
         }
     }).catch(async err => {
         console.error(err);
-        return await err.response.text();
+        return "Trello API: " + await err.response.text();
     });
 
     return await response.json();
@@ -9663,7 +9667,6 @@ async function attachTrelloUrlAttachment(cardId, url) {
     }, {
         url: url
     });
-    console.log(fetchUrl);
     var response = await fetch(fetchUrl, {
         method: 'POST',
         headers: {
@@ -9671,32 +9674,65 @@ async function attachTrelloUrlAttachment(cardId, url) {
         }
     }).catch(async err => {
         console.error(err);
-        return await err.response.text();
+        return "Trello API: " + await err.response.text();
     });
 
-    console.log(response);
-    return response;
+    return await response.json();
+}
+
+async function getTrelloCardAttachments(cardId) {
+    var fetchUrl = buildTrelloRequestUrl(null, {
+        name: 'cards',
+        id: cardId,
+        type: 'attachments'
+    }, null);
+
+    var response = await fetch(fetchUrl, {
+        method: 'GET',
+        headers: {
+            'Accept': 'application/json'
+        }
+    }).catch(async err => {
+        console.error(err);
+        return "Trello API: " + await err.response.text();
+    });
+
+    return await response.json();
 }
 
 exports.getCardByBranchName = getCardByBranchName;
 exports.attachTrelloUrlAttachment = attachTrelloUrlAttachment;
+exports.getTrelloCardAttachments = getTrelloCardAttachments;
 
 /***/ }),
 
 /***/ 8474:
 /***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
 
-const TrelloAutomation = __nccwpck_require__(6871);
+const TrelloAPI = __nccwpck_require__(6871);
 
 async function attachPullResuest(branchName, prUrl) {
-    var cardData = await TrelloAutomation.getCardByBranchName(branchName);
+    var cardData = await TrelloAPI.getCardByBranchName(branchName);
     var msg = "成功找到卡片!";
     if (cardData.cards) {
         if (cardData.cards.length = 1) {
             var card = cardData.cards[0];
             if (card.idShort === parseInt(branchName.split('-')[1])) {
-                var result = await TrelloAutomation.attachTrelloUrlAttachment(card.id, prUrl);
-                return { ...card, success: true, msg: msg + " " + card.shortUrl }
+                var attachments = await TrelloAPI.getTrelloCardAttachments(card.id);
+                if (attachments) {
+                    if (attachments.some(it => it.url === prUrl)) {
+                        return { success: true, msg: "Pull request 已经被添加到卡片上了" };
+                    } 
+
+                    var result = await TrelloAPI.attachTrelloUrlAttachment(card.id, prUrl);
+                    if (result.id) {
+                        return { ...card, success: true, msg: msg + " " + card.shortUrl }
+                    }
+                    return { success: false, msg: result };
+
+                } else {
+                    return { success: false, msg: attachments };
+                }
             } else {
                 return { success: false, msg: `找到卡片但无法匹配卡片ID:${branchName}.`};
             }
@@ -9705,18 +9741,6 @@ async function attachPullResuest(branchName, prUrl) {
     } else {
         return { success: false, msg: "Trello API 错误." + cardData };
     }
-}
-
-async function _send_error_message(err) {
-    console.error(_get_current_datetime(), err);
-    // todo: send email message to the initiator and cc me.
-}
-
-function _get_current_datetime () {
-    var dateNow = new Date();
-    var offset = dateNow.getTimezoneOffset();
-    dateNow = new Date(dateNow.getTime() - (offset*60*1000));
-    return dateNow.toISOString();
 }
 
 exports.attachPullResuest = attachPullResuest;
@@ -9904,21 +9928,22 @@ const core = __nccwpck_require__(6024);
 const github = __nccwpck_require__(5016);
 const TrelloAutomation = __nccwpck_require__(8474);
 
-try {
-//   const branchName = core.getInput('branch-name');
-//   const prUrl = core.getInput('pr-url');
-//   console.log(`Targeted branch ${branchName}, PR link ${prUrl}.`);
+(async () => {
+    try {
+        const payload = github.context.payload;
+        core.info(`Branch name: ${process.env.BRANCH_NAME}, pull request URL: ${payload.pull_request.html_url}`);
+        var result = await TrelloAutomation.attachPullResuest(process.env.BRANCH_NAME, payload.pull_request.html_url);
+        if (result.success) {
+            core.info(`Successfully attached PR to card. \n ${JSON.stringify(result)}`);
+        } else {
+            core.error(result);
+            core.setFailed(result);
+        }
+    } catch (error) {
+        core.setFailed(error.message);
+    }
+})();
 
-  // async () => await TrelloAutomation.attachPullResuest(branchName, prUrl)
-
-  const time = (new Date()).toTimeString();
-  core.setOutput("time", time);
-  // Get the JSON webhook payload for the event that triggered the workflow
-  const payload = JSON.stringify(github.context.payload, undefined, 2)
-  console.log(`The event payload: ${payload}`);
-} catch (error) {
-  core.setFailed(error.message);
-}
 })();
 
 module.exports = __webpack_exports__;
