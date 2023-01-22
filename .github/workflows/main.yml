@@ -1,0 +1,17 @@
+on: [push, pull_request]
+
+jobs:
+  hello_world_job:
+    runs-on: ubuntu-latest
+    name: test trello github action
+    steps:
+      # To use this repository's private action,
+      # you must check out the repository
+      - name: Checkout
+        uses: 314-studio/314-trello-automation
+      - name: Hello world action step
+        uses: ./ # Uses an action in the root directory
+        id: test
+      # Use the output from the `hello` step
+      - name: Get the output time
+        run: echo "The time was ${{ steps.hello.outputs.time }}"
