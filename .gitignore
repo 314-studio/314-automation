@@ -1,0 +1,4 @@
+node_modules
+chrome_user_data
+.env
+.DS_Store
