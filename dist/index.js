@@ -9665,7 +9665,6 @@ async function attachTrelloUrlAttachment(cardId, url) {
     }, {
         url: url
     });
-    console.log(fetchUrl);
     var response = await fetch(fetchUrl, {
         method: 'POST',
         headers: {
@@ -9676,31 +9675,64 @@ async function attachTrelloUrlAttachment(cardId, url) {
         return "Trello API: " + await err.response.text();
     });
 
-    return response;
+    return await response.json();
+}
+
+async function getTrelloCardAttachments(cardId) {
+    var fetchUrl = buildTrelloRequestUrl(null, {
+        name: 'cards',
+        id: cardId,
+        type: 'attachments'
+    }, null);
+
+    console.log(fetchUrl);
+
+    var response = await fetch(fetchUrl, {
+        method: 'GET',
+        headers: {
+            'Accept': 'application/json'
+        }
+    }).catch(async err => {
+        console.error(err);
+        return "Trello API: " + await err.response.text();
+    });
+
+    return await response.json();
 }
 
 exports.getCardByBranchName = getCardByBranchName;
 exports.attachTrelloUrlAttachment = attachTrelloUrlAttachment;
+exports.getTrelloCardAttachments = getTrelloCardAttachments;
 
 /***/ }),
 
 /***/ 8474:
 /***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
 
-const TrelloAutomation = __nccwpck_require__(6871);
+const TrelloAPI = __nccwpck_require__(6871);
 
 async function attachPullResuest(branchName, prUrl) {
-    var cardData = await TrelloAutomation.getCardByBranchName(branchName);
+    var cardData = await TrelloAPI.getCardByBranchName(branchName);
     var msg = "成功找到卡片!";
     if (cardData.cards) {
         if (cardData.cards.length = 1) {
             var card = cardData.cards[0];
             if (card.idShort === parseInt(branchName.split('-')[1])) {
-                var result = await TrelloAutomation.attachTrelloUrlAttachment(card.id, prUrl);
-                if (result.id) {
-                    return { ...card, success: true, msg: msg + " " + card.shortUrl }
+                var attachments = await TrelloAPI.getTrelloCardAttachments(card.id);
+                if (attachments) {
+                    if (attachments.some(it => it.url === prUrl)) {
+                        return { success: true, msg: "Pull request 已经被添加到卡片上了" };
+                    } 
+
+                    var result = await TrelloAPI.attachTrelloUrlAttachment(card.id, prUrl);
+                    if (result.id) {
+                        return { ...card, success: true, msg: msg + " " + card.shortUrl }
+                    }
+                    return { success: false, msg: result };
+
+                } else {
+                    return { success: false, msg: attachments };
                 }
-                return { success: false, msg: result };
             } else {
                 return { success: false, msg: `找到卡片但无法匹配卡片ID:${branchName}.`};
             }
@@ -9709,18 +9741,6 @@ async function attachPullResuest(branchName, prUrl) {
     } else {
         return { success: false, msg: "Trello API 错误." + cardData };
     }
-}
-
-async function _send_error_message(err) {
-    console.error(_get_current_datetime(), err);
-    // todo: send email message to the initiator and cc me.
-}
-
-function _get_current_datetime () {
-    var dateNow = new Date();
-    var offset = dateNow.getTimezoneOffset();
-    dateNow = new Date(dateNow.getTime() - (offset*60*1000));
-    return dateNow.toISOString();
 }
 
 exports.attachPullResuest = attachPullResuest;
@@ -9911,10 +9931,10 @@ const TrelloAutomation = __nccwpck_require__(8474);
 (async () => {
     try {
         const payload = github.context.payload;
-        core.info(`Branch name: ${process.env.BRANCH_NAME}, pull request URL: ${payload.pull_request.url}`);
+        core.info(`Branch name: ${process.env.BRANCH_NAME}, pull request URL: ${payload.pull_request.html_url}`);
         var result = await TrelloAutomation.attachPullResuest(process.env.BRANCH_NAME, payload.pull_request.html_url);
         if (result.success) {
-            core.info(`Successfully attached PR to card. \n ${JSON.stringify(result.card)}`);
+            core.info(`Successfully attached PR to card. \n ${JSON.stringify(result)}`);
         } else {
             core.error(result);
             core.setFailed(result);

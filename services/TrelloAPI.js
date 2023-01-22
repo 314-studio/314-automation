@@ -65,7 +65,6 @@ async function attachTrelloUrlAttachment(cardId, url) {
     }, {
         url: url
     });
-    console.log(fetchUrl);
     var response = await fetch(fetchUrl, {
         method: 'POST',
         headers: {
@@ -76,8 +75,31 @@ async function attachTrelloUrlAttachment(cardId, url) {
         return "Trello API: " + await err.response.text();
     });
 
-    return response;
+    return await response.json();
+}
+
+async function getTrelloCardAttachments(cardId) {
+    var fetchUrl = buildTrelloRequestUrl(null, {
+        name: 'cards',
+        id: cardId,
+        type: 'attachments'
+    }, null);
+
+    console.log(fetchUrl);
+
+    var response = await fetch(fetchUrl, {
+        method: 'GET',
+        headers: {
+            'Accept': 'application/json'
+        }
+    }).catch(async err => {
+        console.error(err);
+        return "Trello API: " + await err.response.text();
+    });
+
+    return await response.json();
 }
 
 exports.getCardByBranchName = getCardByBranchName;
 exports.attachTrelloUrlAttachment = attachTrelloUrlAttachment;
+exports.getTrelloCardAttachments = getTrelloCardAttachments;
