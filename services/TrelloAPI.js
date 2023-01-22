@@ -1,4 +1,5 @@
 const fetch = require('node-fetch');
+const core = require('@actions/core');
 
 /*
  * @param {object} params api query paramters to merge in the request url
@@ -6,9 +7,9 @@ const fetch = require('node-fetch');
  * api references https://developer.atlassian.com/cloud/trello/rest/api-group-search/#api-search-get
  */
 function buildTrelloRequestUrl(query, entity, params) {
-    var TRELLO_API_KEY = process.env.TRELLO_API_KEY;
-    var TRELLO_TOKEN = process.env.TRELLO_TOKEN;
-    var TRELLO_API_BASE_URL = process.env.TRELLO_API_BASE_URL;
+    var TRELLO_API_KEY = core.getInput('trello-key', { required: true });
+    var TRELLO_TOKEN = core.getInput('trello-token', { required: true });
+    var TRELLO_API_BASE_URL = core.getInput('trello-api-base', { required: true });
 
     var url = TRELLO_API_BASE_URL;
 
@@ -28,6 +29,7 @@ function buildTrelloRequestUrl(query, entity, params) {
             url += `&${key}=${params[key]}`;
         }
     }
+    core.info(`Making request to ${url}`);
 
     return url + `&key=${TRELLO_API_KEY}&token=${TRELLO_TOKEN}`
 }
