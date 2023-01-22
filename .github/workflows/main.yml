@@ -19,7 +19,7 @@ jobs:
       - name: Hello world action step
         uses: ./
         id: test
-          with:
-            trello-key: ${{ secrets.TRELLO_API_KEY }}
-            trello-token: ${{ secrets.TRELLO_TOKEN }}
-            trello-api-base: ${{ vars.TRELLO_API_BASE_URL }}
+        with:
+          trello-key: ${{ secrets.TRELLO_API_KEY }}
+          trello-token: ${{ secrets.TRELLO_TOKEN }}
+          trello-api-base: ${{ vars.TRELLO_API_BASE_URL }}
