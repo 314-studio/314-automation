@@ -29,7 +29,6 @@ function buildTrelloRequestUrl(query, entity, params) {
             url += `&${key}=${params[key]}`;
         }
     }
-    core.info(`Making request to ${url}`);
 
     return url + `&key=${TRELLO_API_KEY}&token=${TRELLO_TOKEN}`
 }
