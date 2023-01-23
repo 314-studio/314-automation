@@ -10,7 +10,7 @@ async function attachPullResuest(branchName, prUrl) {
                 var attachments = await TrelloAPI.getTrelloCardAttachments(card.id);
                 if (attachments) {
                     if (attachments.some(it => it.url === prUrl)) {
-                        return { success: true, msg: "Pull request 已经被添加到卡片上了" };
+                        return { success: true, msg: "Pull request/Branch 已经被添加到卡片上了" };
                     } 
 
                     var result = await TrelloAPI.attachTrelloUrlAttachment(card.id, prUrl);

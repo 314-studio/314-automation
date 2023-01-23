@@ -9721,7 +9721,7 @@ async function attachPullResuest(branchName, prUrl) {
                 var attachments = await TrelloAPI.getTrelloCardAttachments(card.id);
                 if (attachments) {
                     if (attachments.some(it => it.url === prUrl)) {
-                        return { success: true, msg: "Pull request 已经被添加到卡片上了" };
+                        return { success: true, msg: "Pull request/Branch 已经被添加到卡片上了" };
                     } 
 
                     var result = await TrelloAPI.attachTrelloUrlAttachment(card.id, prUrl);
@@ -9931,12 +9931,18 @@ const TrelloAutomation = __nccwpck_require__(8474);
 (async () => {
     try {
         const payload = github.context.payload;
-        // core.info(`Branch name: ${process.env.BRANCH_NAME}, pull request URL: ${payload.pull_request.html_url}`);
-        core.info(JSON.stringify(payload, undefined, 2));
-        // var result = await TrelloAutomation.attachPullResuest(process.env.BRANCH_NAME, payload.pull_request.html_url);
-        var result = { success: true };
+        var result = { success: true, msg: 'unrecognized git operation.', payload: payload };
+        var branchName = process.env.BRANCH_NAME;
+        if (payload.ref_type && payload.ref_type === 'branch') {
+            var branchUrl = `${payload.repository.html_url}/tree/${branchName}`;
+            core.info(`Created new branch, ${branchName}, branch url: ${branchUrl}`);
+            var result = await TrelloAutomation.attachPullResuest(branchName, `${branchUrl}`);
+        } else if (payload.pull_request) {
+            core.info(`PR created, Branch name: ${branchName}, pull request URL: ${payload.pull_request.html_url}`);
+            var result = await TrelloAutomation.attachPullResuest(branchName, payload.pull_request.html_url);
+        }
         if (result.success) {
-            core.info(`Successfully attached PR to card. \n ${JSON.stringify(result)}`);
+            core.info(`Successfully attached URL to card. \n ${JSON.stringify(result)}`);
         } else {
             core.error(result);
             core.setFailed(result);
