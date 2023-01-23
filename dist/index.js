@@ -9617,7 +9617,7 @@ function buildTrelloLinkComment (cardInfo) {
 
 async function addPrComment (cardInfo) {
     var comment = buildTrelloLinkComment(cardInfo);
-    return octokit.issues.createComment({
+    return octokit.rest.issues.createComment({
         ...baseIssuesArgs,
         comment
     });
