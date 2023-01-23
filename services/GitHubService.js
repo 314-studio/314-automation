@@ -1,8 +1,8 @@
 const github = require('@actions/github');
 const core = require('@actions/core');
 
-const ghToken = core.getInput('repo-token');
-const octokit = new github.GitHub(ghToken);
+const ghToken = core.getInput('github-repo-token');
+const octokit = github.getOctokit(ghToken);
 
 const baseIssuesArgs = {
     owner: (evthookPayload.organization || evthookPayload.repository.owner).login,

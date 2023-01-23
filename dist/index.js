@@ -9601,8 +9601,8 @@ function wrappy (fn, cb) {
 const github = __nccwpck_require__(5016);
 const core = __nccwpck_require__(6024);
 
-const ghToken = core.getInput('repo-token');
-const octokit = new github.GitHub(ghToken);
+const ghToken = core.getInput('github-repo-token');
+const octokit = github.getOctokit(ghToken);
 
 const baseIssuesArgs = {
     owner: (evthookPayload.organization || evthookPayload.repository.owner).login,
