@@ -15,8 +15,8 @@ function buildTrelloLinkComment (cardInfo) {
     return `![](https://github.trello.services/images/mini-trello-icon.png) [${cardInfo.name}](${cardInfo.url})`;
 }
 
-const addPrComment = async (cardInfo) => {
-    var comment = buildTrelloLinkComment();
+async function addPrComment (cardInfo) {
+    var comment = buildTrelloLinkComment(cardInfo);
     return octokit.issues.createComment({
         ...baseIssuesArgs,
         comment
