@@ -19,7 +19,7 @@ async function addPrComment (cardInfo) {
     var comment = buildTrelloLinkComment(cardInfo);
     return octokit.rest.issues.createComment({
         ...baseIssuesArgs,
-        comment
+        body: comment
     });
 };
 
