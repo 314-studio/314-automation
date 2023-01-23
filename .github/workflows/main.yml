@@ -1,7 +1,7 @@
 on:
-  push:
+  create:
     branches:
-    - main
+    - RLS-*
   pull_request:
     branches:
     - main
