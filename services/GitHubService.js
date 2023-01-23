@@ -1,4 +1,5 @@
 const github = require('@actions/github');
+const core = require('@actions/core');
 
 const ghToken = core.getInput('repo-token');
 const octokit = new github.GitHub(ghToken);
