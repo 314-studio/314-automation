@@ -10,6 +10,9 @@ inputs:
   trello-api-base:
     description: 'Trello api gateway'
     required: true
+  github-repo-token:
+    description: 'github token'
+    required: true
 runs:
   using: 'node16'
   main: 'dist/index.js'

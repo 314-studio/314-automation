@@ -1,6 +1,7 @@
 const core = require('@actions/core');
 const github = require('@actions/github');
 const TrelloAutomation = require('./services/TrelloAutomation');
+const GitHubService = require('./services/GitHubService');
 
 (async () => {
     try {
@@ -14,6 +15,9 @@ const TrelloAutomation = require('./services/TrelloAutomation');
         } else if (payload.pull_request) {
             core.info(`PR created, Branch name: ${branchName}, pull request URL: ${payload.pull_request.html_url}`);
             var result = await TrelloAutomation.attachPullResuest(branchName, payload.pull_request.html_url);
+            if (result.name) {
+                await GitHubService.addPrComment(result);
+            }
         }
         if (result.success) {
             core.info(`Successfully attached URL to card. \n ${JSON.stringify(result)}`);
