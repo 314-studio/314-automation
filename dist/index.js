@@ -9603,11 +9603,12 @@ const core = __nccwpck_require__(6024);
 
 const ghToken = core.getInput('github-repo-token');
 const octokit = github.getOctokit(ghToken);
+const payload = github.context.payload;
 
 const baseIssuesArgs = {
-    owner: (evthookPayload.organization || evthookPayload.repository.owner).login,
-    repo: evthookPayload.repository.name,
-    issue_number: evthookPayload.pull_request.number
+    owner: (payload.organization || payload.repository.owner).login,
+    repo: payload.repository.name,
+    issue_number: payload.pull_request.number
 };
 
 function buildTrelloLinkComment (cardInfo) {
