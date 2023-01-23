@@ -42,7 +42,7 @@ async function getCardByBranchName(branchName) {
         name: branchName
     }, null, {
         modelTypes: "cards",
-        card_fields: "idShort,shortUrl,url"
+        card_fields: "name,idShort,shortUrl,url"
     });
 
     var response = await fetch(fetchUrl, {
