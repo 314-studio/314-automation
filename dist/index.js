@@ -9931,16 +9931,16 @@ const TrelloAutomation = __nccwpck_require__(8474);
 (async () => {
     try {
         const payload = github.context.payload;
-        var result = { success: false, msg: 'unrecognized git operation.', payload: JSON.stringify(payload) };
+        var result = { success: true, msg: 'unrecognized git operation.', payload: JSON.stringify(payload) };
         var branchName = process.env.BRANCH_NAME;
-        if (payload.pusher) {
-            var branchUrl = `${payload.repository.html_url}/tree/${branchName}/`;
-            core.info(`Pushing to main branch, from: ${branchName}, branch url: `);
-            var result = await TrelloAutomation.attachPullResuest(branchName, `${branchUrl}`);
-        } else {
-            core.info(`PR created, Branch name: ${branchName}, pull request URL: ${payload.pull_request.html_url}`);
-            var result = await TrelloAutomation.attachPullResuest(branchName, payload.pull_request.html_url);
-        }
+        // if (payload.pusher) {
+        //     var branchUrl = `${payload.repository.html_url}/tree/${branchName}/`;
+        //     core.info(`Pushing to main branch, from: ${branchName}, branch url: `);
+        //     var result = await TrelloAutomation.attachPullResuest(branchName, `${branchUrl}`);
+        // } else {
+        //     core.info(`PR created, Branch name: ${branchName}, pull request URL: ${payload.pull_request.html_url}`);
+        //     var result = await TrelloAutomation.attachPullResuest(branchName, payload.pull_request.html_url);
+        // }
         if (result.success) {
             core.info(`Successfully attached PR to card. \n ${JSON.stringify(result)}`);
         } else {
