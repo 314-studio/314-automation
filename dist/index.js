@@ -9628,7 +9628,7 @@ exports.addPrComment = addPrComment;
 /***/ }),
 
 /***/ 6871:
-/***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
+/***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
 
 const fetch = __nccwpck_require__(2460);
 const core = __nccwpck_require__(6024);
@@ -9732,9 +9732,11 @@ async function getTrelloCardAttachments(cardId) {
     return await response.json();
 }
 
-exports.getCardByBranchName = getCardByBranchName;
-exports.attachTrelloUrlAttachment = attachTrelloUrlAttachment;
-exports.getTrelloCardAttachments = getTrelloCardAttachments;
+module.exports = {
+    getCardByBranchName: getCardByBranchName,
+    attachTrelloUrlAttachment: attachTrelloUrlAttachment,
+    getTrelloCardAttachments: getTrelloCardAttachments
+}
 
 /***/ }),
 

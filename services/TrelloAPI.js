@@ -100,6 +100,8 @@ async function getTrelloCardAttachments(cardId) {
     return await response.json();
 }
 
-exports.getCardByBranchName = getCardByBranchName;
-exports.attachTrelloUrlAttachment = attachTrelloUrlAttachment;
-exports.getTrelloCardAttachments = getTrelloCardAttachments;
+module.exports = {
+    getCardByBranchName: getCardByBranchName,
+    attachTrelloUrlAttachment: attachTrelloUrlAttachment,
+    getTrelloCardAttachments: getTrelloCardAttachments
+}
