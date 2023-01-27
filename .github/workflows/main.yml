@@ -23,6 +23,10 @@ jobs:
         uses: ./
         id: p1
         with:
+          trello-board-id: ${{ vars.TRELLO_BOARD_ID }}
+          trello-list-name-done: ${{ vars.TRELLO_LIST_NAME_DONE }}
+          trello-list-name-under-review: ${{ vars.TRELLO_LIST_NAME_UNDER_REVIEW }}
+          trello-list-name-in-progress: ${{ var.TRELLO_LIST_NAME_IN_PROGRESS }}
           trello-key: ${{ secrets.TRELLO_API_KEY }}
           trello-token: ${{ secrets.TRELLO_TOKEN }}
           trello-api-base: ${{ vars.TRELLO_API_BASE_URL }}

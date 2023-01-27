@@ -1,6 +1,18 @@
 name: '314 Trello Automation Action'
 description: 'Attach Pull request and Branch to Trello card.'
 inputs:
+  trello-board-id:
+    description: 'Trello board id'
+    required: true
+  trello-list-name-done:
+    description: 'The list in Trello for completed stories.'
+    required: true
+  trello-list-name-under-review:
+    description: 'The list in Trello for cards under review.'
+    required: true
+  trello-list-name-in-progress:
+    description: 'The list in Trello for cards in progress'
+    required: true
   trello-key:
     description: 'Trello auth key'
     required: true
