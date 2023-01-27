@@ -1,4 +1,7 @@
 on:
+  push:
+    branches:
+    - main
   create:
     branches:
     - RLS-*
@@ -12,7 +15,7 @@ env:
 jobs:
   attach_pr_to_trello:
     runs-on: ubuntu-latest
-    name: Attach GitHub pull request to Trello cards
+    name: Trello Automation
     steps:
       - name: Checkout
         uses: actions/checkout@v3
@@ -20,6 +23,10 @@ jobs:
         uses: ./
         id: p1
         with:
+          trello-board-id: ${{ vars.TRELLO_BOARD_ID }}
+          trello-list-name-done: ${{ vars.TRELLO_LIST_NAME_DONE }}
+          trello-list-name-under-review: ${{ vars.TRELLO_LIST_NAME_UNDER_REVIEW }}
+          trello-list-name-in-progress: ${{ vars.TRELLO_LIST_NAME_IN_PROGRESS }}
           trello-key: ${{ secrets.TRELLO_API_KEY }}
           trello-token: ${{ secrets.TRELLO_TOKEN }}
           trello-api-base: ${{ vars.TRELLO_API_BASE_URL }}
