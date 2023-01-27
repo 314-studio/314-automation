@@ -59,7 +59,7 @@ async function moveCardToDone(branchName) {
     return { ...card, success: true }
 }
 
-exports = {
+module.exports = {
     attachPullResuest: attachPullResuest,
     attachNewBranch: attachNewBranch,
     moveCardToDone: moveCardToDone

@@ -9756,7 +9756,7 @@ module.exports = {
 /***/ }),
 
 /***/ 8474:
-/***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
+/***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
 
 const TrelloAPI = __nccwpck_require__(6871);
 const core = __nccwpck_require__(6024);
@@ -9819,7 +9819,7 @@ async function moveCardToDone(branchName) {
     return { ...card, success: true }
 }
 
-exports = {
+module.exports = {
     attachPullResuest: attachPullResuest,
     attachNewBranch: attachNewBranch,
     moveCardToDone: moveCardToDone
