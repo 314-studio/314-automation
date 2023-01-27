@@ -9801,6 +9801,7 @@ async function attachNewBranch(branchName, branchUrl) {
 
 async function _moveCardToList(card, listName) {
     var list = await TrelloAPI.getListByName(listName);
+    core.info(`Moving card ${card.name} to list ${list.name}`);
     await TrelloAPI.moveCardToList(card.id, list.id);
 }
 
