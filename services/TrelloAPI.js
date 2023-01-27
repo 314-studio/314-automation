@@ -91,7 +91,7 @@ async function getCardByBranchName(branchName) {
         return result.cards[0];
     }
     console.log(result);
-    core.setFailed("Trello API: Can not find card or find more than one card.");
+    core.setFailed("Trello API: Can not find card or find more than one cards.");
     return;
 }
 

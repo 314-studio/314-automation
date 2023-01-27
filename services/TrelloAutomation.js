@@ -25,22 +25,23 @@ async function _attachGitHubUrl(branchName, url) {
 
 async function attachPullResuest(branchName, prUrl) {
     var result = await _attachGitHubUrl(branchName, prUrl);
-    if (result.card) {
-        await _moveCardToList(result.card, TRELLO_LIST_NAME_UNDER_REVIEW);
+    if (result.id) {
+        await _moveCardToList(result, TRELLO_LIST_NAME_UNDER_REVIEW);
     }
     return result;
 }
 
 async function attachNewBranch(branchName, branchUrl) {
     var result = await _attachGitHubUrl(branchName, branchUrl);
-    if (result.card) {
-        await _moveCardToList(result.card, TRELLO_LIST_NAME_IN_PROGRESS);
+    if (result.id) {
+        await _moveCardToList(result, TRELLO_LIST_NAME_IN_PROGRESS);
     }
     return result;
 }
 
 async function _moveCardToList(card, listName) {
     var list = await TrelloAPI.getListByName(listName);
+    core.info(`Moving card ${card.name} to list ${list.name}`);
     await TrelloAPI.moveCardToList(card.id, list.id);
 }
 

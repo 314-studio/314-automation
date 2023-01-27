@@ -24,10 +24,10 @@ const GitHubService = require('./services/GitHubService');
                 await GitHubService.addPrComment(result);
             }
         
-        // get push to main triggered
+        // git push to main triggered
         } else if (payload.pusher) {
             core.info(`Merging to main, Branch name: ${branchName}, pushed by ${payload.pusher.name}`);
-            result = await TrelloAutomation.moveCardToDone(branchName);
+            // result = await TrelloAutomation.moveCardToDone(branchName);
         }
 
 
