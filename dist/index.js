@@ -9723,7 +9723,7 @@ async function getCardByBranchName(branchName) {
         return result.cards[0];
     }
     console.log(result);
-    core.setFailed("Trello API: Can not find card or find more than one card.");
+    core.setFailed("Trello API: Can not find card or find more than one cards.");
     return;
 }
 
@@ -10030,10 +10030,10 @@ const GitHubService = __nccwpck_require__(7378);
                 await GitHubService.addPrComment(result);
             }
         
-        // get push to main triggered
+        // git push to main triggered
         } else if (payload.pusher) {
             core.info(`Merging to main, Branch name: ${branchName}, pushed by ${payload.pusher.name}`);
-            result = await TrelloAutomation.moveCardToDone(branchName);
+            // result = await TrelloAutomation.moveCardToDone(branchName);
         }
 
 
