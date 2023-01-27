@@ -25,16 +25,16 @@ async function _attachGitHubUrl(branchName, url) {
 
 async function attachPullResuest(branchName, prUrl) {
     var result = await _attachGitHubUrl(branchName, prUrl);
-    if (result.card) {
-        await _moveCardToList(result.card, TRELLO_LIST_NAME_UNDER_REVIEW);
+    if (result.id) {
+        await _moveCardToList(result, TRELLO_LIST_NAME_UNDER_REVIEW);
     }
     return result;
 }
 
 async function attachNewBranch(branchName, branchUrl) {
     var result = await _attachGitHubUrl(branchName, branchUrl);
-    if (result.card) {
-        await _moveCardToList(result.card, TRELLO_LIST_NAME_IN_PROGRESS);
+    if (result.id) {
+        await _moveCardToList(result, TRELLO_LIST_NAME_IN_PROGRESS);
     }
     return result;
 }
