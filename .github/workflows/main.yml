@@ -15,7 +15,7 @@ env:
 jobs:
   attach_pr_to_trello:
     runs-on: ubuntu-latest
-    name: Attach GitHub pull request to Trello cards
+    name: Trello Automation
     steps:
       - name: Checkout
         uses: actions/checkout@v3

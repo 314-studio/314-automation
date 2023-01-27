@@ -9601,22 +9601,22 @@ function wrappy (fn, cb) {
 const github = __nccwpck_require__(5016);
 const core = __nccwpck_require__(6024);
 
-const ghToken = core.getInput('github-repo-token');
-const octokit = github.getOctokit(ghToken);
-const payload = github.context.payload;
-
-const baseIssuesArgs = {
-    owner: (payload.organization || payload.repository.owner).login,
-    repo: payload.repository.name,
-    issue_number: payload.pull_request.number
-};
-
-function buildTrelloLinkComment (cardInfo) {
+function _buildTrelloLinkComment (cardInfo) {
     return `![](https://github.trello.services/images/mini-trello-icon.png) [${cardInfo.name}](${cardInfo.url})`;
 }
 
 async function addPrComment (cardInfo) {
-    var comment = buildTrelloLinkComment(cardInfo);
+    const ghToken = core.getInput('github-repo-token');
+    const octokit = github.getOctokit(ghToken);
+    const payload = github.context.payload;
+
+    const baseIssuesArgs = {
+        owner: (payload.organization || payload.repository.owner).login,
+        repo: payload.repository.name,
+        issue_number: payload.pull_request.number
+    };
+
+    var comment = _buildTrelloLinkComment(cardInfo);
     return octokit.rest.issues.createComment({
         ...baseIssuesArgs,
         body: comment
