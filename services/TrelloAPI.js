@@ -80,9 +80,9 @@ async function moveCardToList(cardId, listId) {
     return;
 }
 
-async function getCardByBranchName(branchName) {
+async function getCardByCustomId(cardCustomId) {
     var result =  await sendTrelloRequest('GET', {
-        name: branchName
+        name: cardCustomId
     }, null, {
         modelTypes: "cards",
         card_fields: "name,idShort,shortUrl,url"
@@ -114,7 +114,7 @@ async function getTrelloCardAttachments(cardId) {
 }
 
 module.exports = {
-    getCardByBranchName: getCardByBranchName,
+    getCardByCustomId: getCardByCustomId,
     attachTrelloUrlAttachment: attachTrelloUrlAttachment,
     getTrelloCardAttachments: getTrelloCardAttachments,
     getListByName: getListByName,
