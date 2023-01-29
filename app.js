@@ -8,26 +8,32 @@ const GitHubService = require('./services/GitHubService');
         const payload = github.context.payload;
         var result = { success: false, msg: 'unrecognized git operation.', payload: payload };
         var branchName = process.env.BRANCH_NAME;
+        core.info(`Triggered on branch ${branchName}`);
+        var cardCustomId = branchName;
+        if (cardCustomId && cardCustomId.split('-').length > 2) {
+            var splited = cardCustomId.split('-');
+            cardCustomId = `${splited[0]}-${splited[1]}`;
+        }
 
 
         // git create new branch triggered 
         if (payload.ref_type && payload.ref_type === 'branch') {
-            var branchUrl = `${payload.repository.html_url}/tree/${branchName}`;
-            core.info(`Created new branch, ${branchName}, branch url: ${branchUrl}`);
-            result = await TrelloAutomation.attachNewBranch(branchName, `${branchUrl}`);
+            var branchUrl = `${payload.repository.html_url}/tree/${cardCustomId}`;
+            core.info(`Created new branch, ${branchName} with card custom ID ${cardCustomId}, branch url: ${branchUrl}`);
+            result = await TrelloAutomation.attachNewBranch(cardCustomId, `${branchUrl}`);
         
         // git create pull request triggered
         } else if (payload.pull_request) {
-            core.info(`PR created, Branch name: ${branchName}, pull request URL: ${payload.pull_request.html_url}`);
-            result = await TrelloAutomation.attachPullResuest(branchName, payload.pull_request.html_url);
+            core.info(`PR created, Branch name: ${cardCustomId}, pull request URL: ${payload.pull_request.html_url}`);
+            result = await TrelloAutomation.attachPullResuest(cardCustomId, payload.pull_request.html_url);
             if (result.name) {
                 await GitHubService.addPrComment(result);
             }
         
         // git push to main triggered
         } else if (payload.pusher) {
-            core.info(`Merging to main, Branch name: ${branchName}, pushed by ${payload.pusher.name}`);
-            // result = await TrelloAutomation.moveCardToDone(branchName);
+            core.info(`Merging to main, Branch name: ${cardCustomId}, pushed by ${payload.pusher.name}`);
+            // result = await TrelloAutomation.moveCardToDone(cardCustomId);
         }
 
 
