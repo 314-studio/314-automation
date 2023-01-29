@@ -18,7 +18,7 @@ const GitHubService = require('./services/GitHubService');
 
         // git create new branch triggered 
         if (payload.ref_type && payload.ref_type === 'branch') {
-            var branchUrl = `${payload.repository.html_url}/tree/${cardCustomId}`;
+            var branchUrl = `${payload.repository.html_url}/tree/${branchName}`;
             core.info(`Created new branch, ${branchName} with card custom ID ${cardCustomId}, branch url: ${branchUrl}`);
             result = await TrelloAutomation.attachNewBranch(cardCustomId, `${branchUrl}`);
         

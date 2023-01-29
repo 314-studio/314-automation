@@ -9712,9 +9712,9 @@ async function moveCardToList(cardId, listId) {
     return;
 }
 
-async function getCardByBranchName(branchName) {
+async function getCardByCustomId(cardCustomId) {
     var result =  await sendTrelloRequest('GET', {
-        name: branchName
+        name: cardCustomId
     }, null, {
         modelTypes: "cards",
         card_fields: "name,idShort,shortUrl,url"
@@ -9746,7 +9746,7 @@ async function getTrelloCardAttachments(cardId) {
 }
 
 module.exports = {
-    getCardByBranchName: getCardByBranchName,
+    getCardByCustomId: getCardByCustomId,
     attachTrelloUrlAttachment: attachTrelloUrlAttachment,
     getTrelloCardAttachments: getTrelloCardAttachments,
     getListByName: getListByName,
@@ -10025,7 +10025,7 @@ const GitHubService = __nccwpck_require__(6225);
 
         // git create new branch triggered 
         if (payload.ref_type && payload.ref_type === 'branch') {
-            var branchUrl = `${payload.repository.html_url}/tree/${cardCustomId}`;
+            var branchUrl = `${payload.repository.html_url}/tree/${branchName}`;
             core.info(`Created new branch, ${branchName} with card custom ID ${cardCustomId}, branch url: ${branchUrl}`);
             result = await TrelloAutomation.attachNewBranch(cardCustomId, `${branchUrl}`);
         
