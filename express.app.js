@@ -4,6 +4,7 @@ const app = express();
 const port = 3000;
 
 const trelloRouter = require('./routers/trello');
+const githubRouter = require('./routers/github');
 
 app.use(express.json())
 
@@ -18,6 +19,7 @@ app.use((req, res, next) => {
 });
 
 app.use('/trello', trelloRouter);
+app.use('/github', githubRouter);
 
 app.listen(port, () => {
     console.log(`Example app listening on port ${port}`)

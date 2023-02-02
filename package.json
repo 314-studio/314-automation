@@ -21,7 +21,10 @@
     "@actions/github": "^5.1.1",
     "dotenv": "^16.0.3",
     "express": "^4.18.2",
+    "graphql": "^16.6.0",
+    "graphql-request": "^5.1.0",
     "node-fetch": "^2.6.8",
-    "npm": "^9.3.1"
+    "npm": "^9.3.1",
+    "octokit": "^2.0.14"
   }
 }
