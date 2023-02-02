@@ -1,10 +1,10 @@
 const fetch = require('node-fetch');
-const core = require('@actions/core');
+const logger = require('./Logger');
 
-const TRELLO_API_KEY = core.getInput('trello-key', { required: true });
-const TRELLO_TOKEN = core.getInput('trello-token', { required: true });
-const TRELLO_API_BASE_URL = core.getInput('trello-api-base', { required: true });
-const TRELLO_BOARD_ID = core.getInput('trello-board-id', { required: true });
+const TRELLO_API_KEY = process.env.TRELLO_API_KEY;
+const TRELLO_TOKEN = process.env.TRELLO_TOKEN;
+const TRELLO_API_BASE_URL = process.env.TRELLO_API_BASE_URL;
+const TRELLO_BOARD_ID = process.env.TRELLO_BOARD_ID;
 
 
 async function sendTrelloRequest(method, query, entity, params) {
@@ -28,7 +28,7 @@ async function sendTrelloRequest(method, query, entity, params) {
         }
     }
 
-    core.info(`Making request to ${url}`);
+    logger.info(`Making request to ${url}`);
 
     url += `key=${TRELLO_API_KEY}&token=${TRELLO_TOKEN}`;
 
@@ -38,8 +38,7 @@ async function sendTrelloRequest(method, query, entity, params) {
             'Accept': 'application/json'
         }
     }).catch(async err => {
-        console.error(err);
-        core.setFailed("Trello API: " + await err.response.text());
+        logger.error('Trello API', await err.response.text(), err);
         return;
     });
 
@@ -59,8 +58,7 @@ async function getListByName(listName) {
         return list;
     }
 
-    console.log(lists)
-    core.setFailed(`Cannot find list with list name ${listName}`);
+    logger.error(`Cannot find list with list name ${listName}`, list);
     return;
 }
 
@@ -73,10 +71,10 @@ async function moveCardToList(cardId, listId) {
         idList: listId
     });
     if (response.id) {
-        return;
+        logger.log('Card moved to list.', cardId, listId);
+        return response;
     }
-    console.log(response);
-    core.setFailed(`Move card failed, ${response}`);
+    logger.error('Move card failed', response)
     return;
 }
 
@@ -85,13 +83,13 @@ async function getCardByCustomId(cardCustomId) {
         name: cardCustomId
     }, null, {
         modelTypes: "cards",
-        card_fields: "name,idShort,shortUrl,url"
+        card_fields: "name,idShort,shortUrl,url",
+        idBoards: TRELLO_BOARD_ID
     });
     if (result.cards && result.cards.length === 1) {
         return result.cards[0];
     }
-    console.log(result);
-    core.setFailed("Trello API: Can not find card or find more than one cards.");
+    logger.error("Trello API: Can not find card or find more than one cards.", result);
     return;
 }
 
