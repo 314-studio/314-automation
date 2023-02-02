@@ -22,5 +22,5 @@ app.use('/trello', trelloRouter);
 app.use('/github', githubRouter);
 
 app.listen(port, () => {
-    console.log(`Example app listening on port ${port}`)
+    console.log(`314 automation add service is running, port: ${port}.`)
 });
