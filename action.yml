@@ -7,6 +7,12 @@ inputs:
   m2m-314-automation-base-url:
     description: '314 automation api base url.'
     required: true
+  trello-list-name-under-review:
+    description: 'Trello list name for cards under review.'
+    required: true
+  trello-list-name-in-progress:
+    description: 'Trello list name for cards done.'
+    required: true
 runs:
   using: 'node16'
   main: 'dist/index.js'
