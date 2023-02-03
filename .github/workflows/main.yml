@@ -5,20 +5,36 @@ on:
   pull_request:
     branches:
     - main
+  workflow_dispatch:
 
 env:
  BRANCH_NAME: ${{ github.head_ref || github.ref_name }} 
 
 jobs:
-  trello-automation:
+  build:
+    if: true
     runs-on: ubuntu-latest
-    name: Run trello automation actions
+    name: Build 314 API services
+    steps:
+      - name: executing remote ssh commands using ssh key
+        uses: appleboy/ssh-action@v0.1.7
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USERNAME }}
+          key: ${{ secrets.KEY }}
+          port: ${{ secrets.PORT }}
+          script: scripts/DeployAPIServices.sh
+
+  314-automation:
+    if: github.event_name != 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    name: Run automation actions
     steps:
       - name: Checkout
         uses: actions/checkout@v3
       - name: Attach PR to Trello
         uses: ./
-        id: p1
+        id: s1
         with:
           trello-board-id: ${{ vars.TRELLO_BOARD_ID }}
           trello-list-name-done: ${{ vars.TRELLO_LIST_NAME_DONE }}
