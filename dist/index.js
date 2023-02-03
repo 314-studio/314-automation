@@ -9625,17 +9625,17 @@ async function getCardByCustomId (cardCustomId) {
 
 async function attachUrlToTrello (cardId, url) {
     var url = `${M2M_314_WORKFLOW_URL_BASE}/trello/card/${cardId}/attachments?url=${url}`;
-    await _sendRequest(url, 'POST');
+    return await _sendRequest(url, 'POST');
 }
 
 async function moveCardToList (cardId, listName) {
     var url = `${M2M_314_WORKFLOW_URL_BASE}/trello/card/${cardId}/lists?listName=${listName}`;
-    await _sendRequest(url, 'POST');
+    return await _sendRequest(url, 'POST');
 }
 
 async function addPrComment (issueNumber, comment) {
     var url = `${M2M_314_WORKFLOW_URL_BASE}/github/issue/${issueNumber}/comments?comment=${comment}`;
-    await _sendRequest(url, 'POST');
+    return await _sendRequest(url, 'POST');
 }
 
 module.exports = {
