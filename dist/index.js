@@ -9877,7 +9877,7 @@ function _buildTrelloLinkComment (cardInfo) {
         } else if (payload.pull_request) {
             core.info(`PR created, Branch name: ${cardCustomId}, pull request URL: ${payload.pull_request.html_url}`);
             await _attachUrlToTrelloAndMoveCard(card.id, payload.pull_request.html_url, TRELLO_LIST_NAME_UNDER_REVIEW);
-            await workflow.addPrComment(_buildTrelloLinkComment(card));
+            await workflow.addPrComment(payload.pull_request.number, _buildTrelloLinkComment(card));
         
         // git push to main triggered
         } else if (payload.pusher) {

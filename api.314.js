@@ -14,7 +14,6 @@ app.use((req, res, next) => {
         return res.status(401).json({ error: 'No credentials sent!' });
     }
     if (req.header("x-api-key") !== process.env.M2M_314_AUTOMATION_SECRET) {
-        console.log(process.env.M2M_314_AUTOMATION_SECRET);
         return res.status(401).json({ error: 'Credentials incorrect!' });
     }
     next();
