@@ -49,5 +49,5 @@ jobs:
         with:
           m2m-314-automation-secret: ${{ secrets.M2M_314_AUTOMATION_SECRET }}
           m2m-314-automation-base-url: ${{ secrets.M2M_314_WORKFLOW_URL_BASE }}
-          trello-list-name-under-review: ${{ TRELLO_LIST_NAME_UNDER_REVIEW }}
-          trello-list-name-in-progress: ${{ TRELLO_LIST_NAME_IN_PROGRESS }}
+          trello-list-name-under-review: ${{ vars.TRELLO_LIST_NAME_UNDER_REVIEW }}
+          trello-list-name-in-progress: ${{ vars.TRELLO_LIST_NAME_IN_PROGRESS }}
