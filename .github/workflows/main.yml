@@ -35,7 +35,7 @@ jobs:
             M2M_314_AUTOMATION_SECRET=${{ secrets.M2M_314_AUTOMATION_SECRET }}
             NODE_ENV=production forever start api.314.js
 
-  314-automation:
+  task-automation:
     if: github.event_name != 'workflow_dispatch'
     runs-on: ubuntu-latest
     name: Run automation actions
