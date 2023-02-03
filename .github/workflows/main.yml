@@ -5,26 +5,53 @@ on:
   pull_request:
     branches:
     - main
+  workflow_dispatch:
 
 env:
  BRANCH_NAME: ${{ github.head_ref || github.ref_name }} 
 
 jobs:
-  attach_pr_to_trello:
+  build:
+    if: true
     runs-on: ubuntu-latest
-    name: Trello Automation
+    name: Build 314 API services
+    steps:
+      - name: executing remote ssh commands using ssh key
+        uses: appleboy/ssh-action@v0.1.7
+        env:
+          TRELLO_API_KEY: ${{ secrets.TRELLO_API_KEY }}
+          TRELLO_TOKEN: ${{ secrets.TRELLO_TOKEN }}
+          TRELLO_API_BASE_URL: ${{ vars.TRELLO_API_BASE_URL }}
+          TRELLO_BOARD_ID: ${{ vars.TRELLO_BOARD_ID }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          M2M_314_AUTOMATION_SECRET: ${{ secrets.M2M_314_AUTOMATION_SECRET }}
+        with:
+          host: ${{ secrets.M2M_314_AUTOMATION_SERVER_HOST }}
+          username: ${{ secrets.M2M_314_AUTOMATION_SERVER_USERNAME }}
+          key: ${{ secrets.M2M_314_AUTOMATION_SERVER_KEY }}
+          port: ${{ secrets.M2M_314_AUTOMATION_SERVER_PORT }}
+          envs: TRELLO_API_KEY,TRELLO_TOKEN,TRELLO_API_BASE_URL,TRELLO_BOARD_ID,GITHUB_TOKEN,M2M_314_AUTOMATION_SECRET
+          script: |
+            PATH=$PATH:/home/${{ secrets.M2M_314_AUTOMATION_SERVER_USERNAME }}/.nvm/versions/node/v18.14.0/bin
+            cd /home/${{ secrets.M2M_314_AUTOMATION_SERVER_USERNAME }}/apps/314-automation
+            forever stop api.314.js
+            git pull
+            npm install
+            NODE_ENV=production forever start api.314.js
+
+  task-automation:
+    if: github.event_name != 'workflow_dispatch'
+    needs: build
+    runs-on: ubuntu-latest
+    name: Run automation actions
     steps:
       - name: Checkout
         uses: actions/checkout@v3
-      - name: Attach PR to Trello
+      - name: Task Automation
         uses: ./
-        id: p1
+        id: j2s2
         with:
-          trello-board-id: ${{ vars.TRELLO_BOARD_ID }}
-          trello-list-name-done: ${{ vars.TRELLO_LIST_NAME_DONE }}
+          m2m-314-automation-secret: ${{ secrets.M2M_314_AUTOMATION_SECRET }}
+          m2m-314-automation-base-url: ${{ secrets.M2M_314_WORKFLOW_URL_BASE }}
           trello-list-name-under-review: ${{ vars.TRELLO_LIST_NAME_UNDER_REVIEW }}
           trello-list-name-in-progress: ${{ vars.TRELLO_LIST_NAME_IN_PROGRESS }}
-          trello-key: ${{ secrets.TRELLO_API_KEY }}
-          trello-token: ${{ secrets.TRELLO_TOKEN }}
-          trello-api-base: ${{ vars.TRELLO_API_BASE_URL }}
-          github-repo-token: ${{ secrets.GITHUB_TOKEN }}

@@ -1,22 +1,14 @@
-const github = require('@actions/github');
-const core = require('@actions/core');
+const { Octokit } = require("octokit");
+const octokit = new Octokit({ auth: process.env.GITHUB_TOKEN });
 
-function _buildTrelloLinkComment (cardInfo) {
-    return `![](https://github.trello.services/images/mini-trello-icon.png) [${cardInfo.name}](${cardInfo.url})`;
-}
-
-async function addPrComment (cardInfo) {
-    const ghToken = core.getInput('github-repo-token');
-    const octokit = github.getOctokit(ghToken);
-    const payload = github.context.payload;
-
+async function addPrComment (issueNumber, comment) {
+    console.log(issueNumber, comment);
     const baseIssuesArgs = {
-        owner: (payload.organization || payload.repository.owner).login,
-        repo: payload.repository.name,
-        issue_number: payload.pull_request.number
+        owner: process.env.GITHUB_REPO_OWNER,
+        repo: process.env.GITHUB_REPO_NAME,
+        issue_number: issueNumber
     };
 
-    var comment = _buildTrelloLinkComment(cardInfo);
     return octokit.rest.issues.createComment({
         ...baseIssuesArgs,
         body: comment

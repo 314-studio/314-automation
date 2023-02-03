@@ -1,29 +1,17 @@
-name: '314 Trello Automation Action'
+name: '314 Automation Actions'
 description: 'Attach Pull request and Branch to Trello card.'
 inputs:
-  trello-board-id:
-    description: 'Trello board id'
+  m2m-314-automation-secret:
+    description: '314 automation api secret.'
     required: true
-  trello-list-name-done:
-    description: 'The list in Trello for completed stories.'
+  m2m-314-automation-base-url:
+    description: '314 automation api base url.'
     required: true
   trello-list-name-under-review:
-    description: 'The list in Trello for cards under review.'
+    description: 'Trello list name for cards under review.'
     required: true
   trello-list-name-in-progress:
-    description: 'The list in Trello for cards in progress'
-    required: true
-  trello-key:
-    description: 'Trello auth key'
-    required: true
-  trello-token:
-    description: 'Trello auth token'
-    required: true
-  trello-api-base:
-    description: 'Trello api gateway'
-    required: true
-  github-repo-token:
-    description: 'github token'
+    description: 'Trello list name for cards done.'
     required: true
 runs:
   using: 'node16'
