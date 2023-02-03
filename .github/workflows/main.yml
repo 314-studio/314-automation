@@ -19,11 +19,21 @@ jobs:
       - name: executing remote ssh commands using ssh key
         uses: appleboy/ssh-action@v0.1.7
         with:
-          host: ${{ secrets.HOST }}
-          username: ${{ secrets.USERNAME }}
-          key: ${{ secrets.KEY }}
-          port: ${{ secrets.PORT }}
-          script: scripts/DeployAPIServices.sh
+          host: ${{ secrets.M2M_314_AUTOMATION_SERVER_HOST }}
+          username: ${{ secrets.M2M_314_AUTOMATION_SERVER_USERNAME }}
+          key: ${{ secrets.M2M_314_AUTOMATION_SERVER_KEY }}
+          port: ${{ secrets.M2M_314_AUTOMATION_SERVER_PORT }}
+          script: |
+            cd /home/${{ secrets.M2M_314_AUTOMATION_SERVER_USERNAME }}/apps/314-automation
+            forever start api.314.js
+            git pull
+            TRELLO_API_KEY=${{ secrets.TRELLO_API_KEY }}
+            TRELLO_TOKEN=${{ secrets.TRELLO_TOKEN }}
+            TRELLO_API_BASE_URL=${{ vars.TRELLO_API_BASE_URL }}
+            TRELLO_BOARD_ID=${{ vars.TRELLO_BOARD_ID }}
+            GITHUB_TOKEN=${{ secrets.GITHUB_TOKEN }}
+            M2M_314_AUTOMATION_SECRET=${{ secrets.M2M_314_AUTOMATION_SECRET }}
+            NODE_ENV=production forever start api.314.js
 
   314-automation:
     if: github.event_name != 'workflow_dispatch'
@@ -36,11 +46,5 @@ jobs:
         uses: ./
         id: s1
         with:
-          trello-board-id: ${{ vars.TRELLO_BOARD_ID }}
-          trello-list-name-done: ${{ vars.TRELLO_LIST_NAME_DONE }}
-          trello-list-name-under-review: ${{ vars.TRELLO_LIST_NAME_UNDER_REVIEW }}
-          trello-list-name-in-progress: ${{ vars.TRELLO_LIST_NAME_IN_PROGRESS }}
-          trello-key: ${{ secrets.TRELLO_API_KEY }}
-          trello-token: ${{ secrets.TRELLO_TOKEN }}
-          trello-api-base: ${{ vars.TRELLO_API_BASE_URL }}
-          github-repo-token: ${{ secrets.GITHUB_TOKEN }}
+          m2m-314-automation-secret: ${{ secrets.M2M_314_AUTOMATION_SECRET }}
+          m2m-314-automation-base-url: ${{ secrets.M2M_314_WORKFLOW_URL_BASE }}

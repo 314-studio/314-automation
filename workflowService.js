@@ -1,11 +1,10 @@
 const fetch = require('node-fetch');
 
 const M2M_314_WORKFLOW_URL_BASE = process.env.M2M_314_WORKFLOW_URL_BASE;
-const M2M_314_AUTOMATION_SECRET = process.env.M2M_314_AUTOMATION_SECRET;
 
 const headers = {
     'Accept': 'application/json',
-    'x-api-key': M2M_314_AUTOMATION_SECRET
+    'x-api-key': process.env.M2M_314_AUTOMATION_SECRET
 }
 
 async function _sendRequest (url, method) {
