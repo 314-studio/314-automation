@@ -44,7 +44,7 @@ jobs:
         uses: actions/checkout@v3
       - name: Attach PR to Trello
         uses: ./
-        id: s1
+        id: j2s2
         with:
           m2m-314-automation-secret: ${{ secrets.M2M_314_AUTOMATION_SECRET }}
           m2m-314-automation-base-url: ${{ secrets.M2M_314_WORKFLOW_URL_BASE }}
