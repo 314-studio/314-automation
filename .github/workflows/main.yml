@@ -24,6 +24,7 @@ jobs:
           key: ${{ secrets.M2M_314_AUTOMATION_SERVER_KEY }}
           port: ${{ secrets.M2M_314_AUTOMATION_SERVER_PORT }}
           script: |
+            PATH=$PATH:/home/${{secrets.SSH_USER_NAME}}/.nvm/versions/node/v18.14.0/.npm-global/bin
             cd /home/${{ secrets.M2M_314_AUTOMATION_SERVER_USERNAME }}/apps/314-automation
             forever stop api.314.js
             git pull
@@ -38,12 +39,13 @@ jobs:
 
   task-automation:
     if: github.event_name != 'workflow_dispatch'
+    needs: build
     runs-on: ubuntu-latest
     name: Run automation actions
     steps:
       - name: Checkout
         uses: actions/checkout@v3
-      - name: Attach PR to Trello
+      - name: Task Automation
         uses: ./
         id: j2s2
         with:
