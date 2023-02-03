@@ -1,18 +1,11 @@
 const fetch = require('node-fetch');
 const core = require('@actions/core');
 
-// const M2M_314_WORKFLOW_URL_BASE = core.getInput('m2m-314-automation-base-url', { required: true });
-
-// const headers = {
-//     'Accept': 'application/json',
-//     'x-api-key': core.getInput('m2m-314-automation-secret', { required: true })
-// }
-
-const M2M_314_WORKFLOW_URL_BASE = 'https://314studio.games:3443';
+const M2M_314_WORKFLOW_URL_BASE = core.getInput('m2m-314-automation-base-url', { required: true });
 
 const headers = {
     'Accept': 'application/json',
-    'x-api-key': '4b5db5f8b5ea4689882ec2c89f36bbbc5c761d7d6d85487a9f5896da17738f94'
+    'x-api-key': core.getInput('m2m-314-automation-secret', { required: true })
 }
 
 async function _sendRequest (url, method) {
