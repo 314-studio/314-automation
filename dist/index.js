@@ -9833,7 +9833,7 @@ const TRELLO_LIST_NAME_IN_PROGRESS = core.getInput('trello-list-name-in-progress
 
 
 async function _attachUrlToTrelloAndMoveCard (cardId, url, listName) {
-    var result = await workflow.attachUrl(cardId, url);
+    var result = await workflow.attachUrlToTrello(cardId, url);
     if (!result.success) {
         core.setFailed(result.msg);
     }
@@ -9859,7 +9859,7 @@ function _buildTrelloLinkComment (cardInfo) {
             cardCustomId = `${splited[0]}-${splited[1]}`;
         }
 
-        var card = await workflow.getCardWithCustomId(cardCustomId);
+        var card = await workflow.getCardByCustomId(cardCustomId);
         if (!card.success) {
             core.setFailed(card.msg);
         }
