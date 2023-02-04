@@ -9867,7 +9867,7 @@ function _buildTrelloLinkComment (cardInfo) {
         }
         core.info(`Found card ${card.name}.`);
         var result = {};
-        
+
         // git create new branch triggered
         if (payload.ref_type && payload.ref_type === 'branch') {
             var branchUrl = `${payload.repository.html_url}/tree/${branchName}`;
@@ -9878,7 +9878,9 @@ function _buildTrelloLinkComment (cardInfo) {
         } else if (payload.pull_request) {
             core.info(`PR created, Branch name: ${cardCustomId}, pull request URL: ${payload.pull_request.html_url}`);
             result = await _attachUrlToTrelloAndMoveCard(card.id, payload.pull_request.html_url, TRELLO_LIST_NAME_UNDER_REVIEW);
-            await workflow.addPrComment(payload.pull_request.number, _buildTrelloLinkComment(card));
+            if (payload.action === 'opened') {
+                await workflow.addPrComment(payload.pull_request.number, _buildTrelloLinkComment(card));
+            }
         
         // git push to main triggered
         } else if (payload.pusher) {

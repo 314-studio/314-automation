@@ -1,8 +1,8 @@
+require('dotenv').config()
 const express = require('express');
 const https = require('https')
 const app = express();
 const fs = require('fs');
-
 
 const trelloRouter = require('./routers/trello');
 const githubRouter = require('./routers/github');
@@ -10,6 +10,9 @@ const githubRouter = require('./routers/github');
 app.use(express.json())
 
 app.use((req, res, next) => {
+    if (req.originalUrl.startsWith('/download')) {
+        return next();
+    }
     if (!req.header("x-api-key")) {
         return res.status(401).json({ error: 'No credentials sent!' });
     }
@@ -19,6 +22,7 @@ app.use((req, res, next) => {
     next();
 });
 
+app.use('/download', express.static('public'));
 app.use('/trello', trelloRouter);
 app.use('/github', githubRouter);
 
