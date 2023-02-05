@@ -3,15 +3,11 @@ const octokit = new Octokit({ auth: process.env.GITHUB_TOKEN });
 const fetch = require('node-fetch');
 const fs = require('fs');
 
-const githubRepoOwner = process.env.GITHUB_REPO.split('/');
-const GITHUB_OWNER = githubRepoOwner[0];
-const GITHUB_REPO = githubRepoOwner[1];
 
-async function addPrComment(issueNumber, comment) {
-    console.log(GITHUB_OWNER, GITHUB_REPO)
+async function addPrComment(owner, repo, issueNumber, comment) {
     const baseIssuesArgs = {
-        owner: GITHUB_OWNER,
-        repo: GITHUB_REPO,
+        owner: owner,
+        repo: repo,
         issue_number: issueNumber
     };
 
@@ -21,12 +17,12 @@ async function addPrComment(issueNumber, comment) {
     });
 };
 
-async function getLastestArtifact(workflowRunId) {
+async function getLastestArtifact(owner, repo, workflowRunId) {
     const response = await octokit.request(
         'GET /repos/{owner}/{repo}/actions/artifacts?per_page={perPage}&page={page}',
         {
-            owner: GITHUB_OWNER,
-            repo: GITHUB_REPO,
+            owner: owner,
+            repo: repo,
             perPage: '2',
             page: '1'
         }
@@ -34,10 +30,10 @@ async function getLastestArtifact(workflowRunId) {
     return response.data.artifacts.find(it => it.workflow_run.id.toString() === workflowRunId);
 }
 
-async function downloadAndHostArtifact(artifactId, artifactName) {
+async function downloadAndHostArtifact(owner, repo, artifactId, artifactName) {
     const response = await octokit.request('GET /repos/{owner}/{repo}/actions/artifacts/{artifact_id}/{archive_format}', {
-        owner: GITHUB_OWNER,
-        repo: GITHUB_REPO,
+        owner: owner,
+        repo: repo,
         artifact_id: artifactId,
         archive_format: 'zip'
     });

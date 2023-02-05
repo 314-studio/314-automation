@@ -34,13 +34,13 @@ async function moveCardToList (cardId, listName) {
     return await _sendRequest(url, 'POST');
 }
 
-async function addPrComment (issueNumber, comment) {
-    var url = `${M2M_314_WORKFLOW_URL_BASE}/github/issue/${issueNumber}/comments?comment=${comment}`;
+async function addPrComment (owner, repo, issueNumber, comment) {
+    var url = `${M2M_314_WORKFLOW_URL_BASE}/github/owner/${owner}/repo/${repo}/issue/${issueNumber}/comments?comment=${comment}`;
     return await _sendRequest(url, 'POST');
 }
 
-async function downloadArtifact (workflowId) {
-    var url = `${M2M_314_WORKFLOW_URL_BASE}/workflow/${workflowId}/artifact/latest/download`;
+async function downloadArtifact (owner, repo, workflowId) {
+    var url = `${M2M_314_WORKFLOW_URL_BASE}/github/owner/${owner}/repo/${repo}/workflow/${workflowId}/artifact/latest/download`;
     return await _sendRequest(url, 'POST');
 }
 
