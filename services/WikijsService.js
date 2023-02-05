@@ -2,7 +2,6 @@ const { gql, GraphQLClient } = require('graphql-request');
 const githubService = require('./GitHubService');
 const cheerio = require('cheerio');
 const format = require('html-format');
-const { release } = require('os');
 
 const M2M_314_DOCS_API_BASE = process.env.M2M_314_DOCS_API_BASE;
 const CHANGE_LOG_DOC_ID = process.env.CHANGE_LOG_DOC_ID;
@@ -15,6 +14,10 @@ const wikiCLient = new GraphQLClient(M2M_314_DOCS_API_BASE, {
 async function addNewRelease(body) {
     const version = body.release.version;
     const commits = await githubService.getPrCommitsByUrl(body.branch.commitsUrl);
+
+    if (body.release && body.release.fileName) {
+        body.release.url = `${process.env.M2M_314_WORKFLOW_URL_BASE}/download/${body.release.fileName}`;
+    }
 
     const response = await getChangeLogContent();
 
@@ -31,7 +34,7 @@ async function addNewRelease(body) {
             }
             var minorHTML = '';
             if (commit.sha === body.release.headSha) {
-                minorHTML = _buildMinorReleaseHTML(commit, release);
+                minorHTML = _buildMinorReleaseHTML(commit, body.release);
             } else {
                 minorHTML = _buildMinorReleaseHTML(commit);
             }
@@ -45,7 +48,7 @@ async function addNewRelease(body) {
         for (commit of commits) {
             var minorHTML = '';
             if (commit.sha === body.release.headSha) {
-                minorHTML = _buildMinorReleaseHTML(commit, release);
+                minorHTML = _buildMinorReleaseHTML(commit, body.release);
             } else {
                 minorHTML = _buildMinorReleaseHTML(commit);
             }
