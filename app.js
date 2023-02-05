@@ -92,9 +92,10 @@ async function onPullRequest (cardCustomId, card) {
 
     core.info(`PR created, Branch name: ${cardCustomId}, pull request URL: ${payload.pull_request.html_url}`);
     result = await _attachUrlToTrelloAndMoveCard(card.id, payload.pull_request.html_url, TRELLO_LIST_NAME_UNDER_REVIEW);
-    // if (payload.action === 'opened') {
+    if (payload.action === 'opened') {
+        // todo core.error if failed
         await workflow.addPrComment(repoOwner, repoName, payload.pull_request.number, _buildTrelloLinkComment(card));
-    // } // todo core.error if failed
+    }
     return result;
 }
 
