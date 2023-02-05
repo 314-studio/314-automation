@@ -9898,6 +9898,7 @@ async function onPullRequest (cardCustomId, card) {
         if (!BUILD_VERSION) {
             core.setFailed(`Workflow run without a build version is not allowed.`);
         }
+        console.log(payload.pull_request);
         
         const changeLogBody = {
             repo: {
@@ -9916,7 +9917,7 @@ async function onPullRequest (cardCustomId, card) {
                 headSha: payload.pull_request.head.sha
             },
             pr: {
-                name: payload.pull_request.body,
+                name: payload.pull_request.body ? payload.pull_request.body : 'PR',
                 url: payload.pull_request.html_url
             },
             trello: {
