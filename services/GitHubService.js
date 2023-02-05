@@ -28,6 +28,12 @@ async function getLastestArtifact(owner, repo, workflowRunId) {
         }
     );
     console.log(response);
+    for (it of response.data.artifacts) {
+        console.log(it);
+        console.log(it.workflow_run.id);
+        console.log(it.workflow_run.id.toString());
+    }
+    console.log(response.data.artifacts.find(it => it.workflow_run.id.toString() === workflowRunId));
     return response.data.artifacts.find(it => it.workflow_run.id.toString() === workflowRunId);
 }
 
