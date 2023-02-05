@@ -24,6 +24,8 @@ router.post('/', async function (req, res) {
             })
         });
         req.pipe(req.busboy);
+    } else {
+        sendError(res, "Not valid content type, require form data.");
     }
 });
 
