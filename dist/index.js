@@ -9645,6 +9645,7 @@ async function downloadArtifact (owner, repo, workflowId) {
 }
 
 async function createChangeLog (body) {
+    console.log('createChangeLog', body);
     var url = `${M2M_314_WORKFLOW_URL_BASE}/changelog`;
     var response = await fetch(url, {
         method: 'POST',
@@ -9654,6 +9655,7 @@ async function createChangeLog (body) {
         console.error('M2M API Error:', err);
         return;
     });
+    console.log(await response.json());
     return await response.json();
 }
 
