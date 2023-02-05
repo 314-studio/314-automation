@@ -34,14 +34,34 @@ async function moveCardToList (cardId, listName) {
     return await _sendRequest(url, 'POST');
 }
 
-async function addPrComment (issueNumber, comment) {
-    var url = `${M2M_314_WORKFLOW_URL_BASE}/github/issue/${issueNumber}/comments?comment=${comment}`;
+async function addPrComment (owner, repo, issueNumber, comment) {
+    var url = `${M2M_314_WORKFLOW_URL_BASE}/github/owner/${owner}/repo/${repo}/issue/${issueNumber}/comments?comment=${comment}`;
     return await _sendRequest(url, 'POST');
+}
+
+async function downloadArtifact (owner, repo, workflowId) {
+    var url = `${M2M_314_WORKFLOW_URL_BASE}/github/owner/${owner}/repo/${repo}/workflow/${workflowId}/artifact/latest/download`;
+    return await _sendRequest(url, 'POST');
+}
+
+async function createChangeLog (body) {
+    var url = `${M2M_314_WORKFLOW_URL_BASE}/changelog`;
+    var response = await fetch(url, {
+        method: 'POST',
+        headers: headers,
+        body: JSON.stringify(body)
+    }).catch(async err => {
+        console.error('M2M API Error:', await err.response.text(), err);
+        return;
+    });
+    return await response.json();
 }
 
 module.exports = {
     getCardByCustomId: getCardByCustomId,
     attachUrlToTrello: attachUrlToTrello,
     moveCardToList: moveCardToList,
-    addPrComment: addPrComment
+    addPrComment: addPrComment,
+    downloadArtifact: downloadArtifact,
+    createChangeLog: createChangeLog
 }

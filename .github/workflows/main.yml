@@ -1,3 +1,5 @@
+name: 314 Task Automation
+
 on:
   create:
     branches:
@@ -35,6 +37,7 @@ jobs:
             PATH=$PATH:/home/${{ secrets.M2M_314_AUTOMATION_SERVER_USERNAME }}/.nvm/versions/node/v18.14.0/bin
             cd /home/${{ secrets.M2M_314_AUTOMATION_SERVER_USERNAME }}/apps/314-automation
             forever stop api.314.js
+            git switch main
             git pull
             npm install
             NODE_ENV=production forever start api.314.js
@@ -43,7 +46,7 @@ jobs:
     if: github.event_name != 'workflow_dispatch'
     needs: build
     runs-on: ubuntu-latest
-    name: Run automation actions
+    name: Task Automation
     steps:
       - name: Checkout
         uses: actions/checkout@v3

@@ -19,10 +19,12 @@
   "dependencies": {
     "@actions/core": "^1.10.0",
     "@actions/github": "^5.1.1",
+    "cheerio": "^1.0.0-rc.12",
     "dotenv": "^16.0.3",
     "express": "^4.18.2",
     "graphql": "^16.6.0",
     "graphql-request": "^5.1.0",
+    "html-format": "^1.0.2",
     "node-fetch": "^2.6.8",
     "npm": "^9.3.1",
     "octokit": "^2.0.14"

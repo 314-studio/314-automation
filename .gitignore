@@ -4,3 +4,5 @@ chrome_user_data
 node_modules
 
 temp.*
+public/*
+snapshots
