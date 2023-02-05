@@ -16,6 +16,7 @@ router.post('/workflow/:workflowId/artifact/latest/download', async function (re
         res.json({ success: false, msg: `Cannot found artifact build by workflow run ${req.params.workflowId}` });
     }
     var result = await githubService.downloadAndHostArtifact(artifact.id, artifact.name);
+    result.head = artifact.workflow_run.head_sha;
     res.json(result);
 });
 

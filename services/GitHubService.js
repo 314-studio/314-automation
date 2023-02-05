@@ -49,14 +49,29 @@ async function downloadAndHostArtifact(artifactId, artifactName) {
             .catch(err => {
                 return { success: false, msg: `Failed to download ${artifactName}, ${err}` };
             });
-        return { success: true, url: `${process.env.M2M_314_WORKFLOW_URL_BASE}/download/${artifactName}.zip` }
+        return { success: true, name: artifactName, url: `${process.env.M2M_314_WORKFLOW_URL_BASE}/download/${artifactName}.zip` }
     } else {
         return { success: false, msg: `Failed to download ${artifactName}`, response: response };
     }
 }
 
+async function getPrCommitsByUrl (url) {
+    var response = await fetch(url, {
+        method: 'GET',
+        headers: {
+            Authorization: `Bearer ${ process.env.GITHUB_TOKEN }`,
+            Accept: 'application/vnd.github+json'
+        }
+    }).catch(async err => {
+        console.error('M2M API Error:', await err.response.text(), err);
+        return;
+    });
+    return await response.json();
+}
+
 module.exports = {
     getLastestArtifact: getLastestArtifact,
     addPrComment: addPrComment,
-    downloadAndHostArtifact: downloadAndHostArtifact
+    downloadAndHostArtifact: downloadAndHostArtifact,
+    getPrCommitsByUrl: getPrCommitsByUrl
 }

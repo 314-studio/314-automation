@@ -6,6 +6,7 @@ const fs = require('fs');
 
 const trelloRouter = require('./routers/trello');
 const githubRouter = require('./routers/github');
+const docRouter = require('./routers/docs');
 
 app.use(express.json())
 
@@ -25,6 +26,7 @@ app.use((req, res, next) => {
 app.use('/download', express.static('public'));
 app.use('/trello', trelloRouter);
 app.use('/github', githubRouter);
+app.use('/docs', docRouter);
 
 if (process.env.NODE_ENV === 'production') {
     const privateKey = fs.readFileSync('../certs/privkey.pem', 'utf8');

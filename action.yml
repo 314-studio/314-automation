@@ -13,6 +13,12 @@ inputs:
   trello-list-name-in-progress:
     description: 'Trello list name for cards done.'
     required: true
+  workflow-id:
+    description: 'Workflow id'
+    required: false
+  build-version:
+    description: 'Game build version'
+    required: false
 runs:
   using: 'node16'
   main: 'dist/index.js'
