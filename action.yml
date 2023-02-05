@@ -1,5 +1,5 @@
 name: '314 Automation Actions'
-description: 'Attach Pull request and Branch to Trello card.'
+description: 'Task automations for 314 studio'
 inputs:
   m2m-314-automation-secret:
     description: '314 automation api secret.'
@@ -18,6 +18,9 @@ inputs:
     required: false
   build-version:
     description: 'Game build version'
+    required: false
+  build-file-name:
+    description: 'Game build file name'
     required: false
 runs:
   using: 'node16'

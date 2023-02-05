@@ -1,5 +1,6 @@
 require('dotenv').config()
 const express = require('express');
+const busboy = require('connect-busboy');
 const https = require('https')
 const app = express();
 const fs = require('fs');
@@ -7,8 +8,12 @@ const fs = require('fs');
 const trelloRouter = require('./routers/trello');
 const githubRouter = require('./routers/github');
 const docRouter = require('./routers/docs');
+const fileUploadService = require('./routers/upload');
 
 app.use(express.json())
+app.use(busboy({
+    highWaterMark: 2 * 1024 * 1024,
+}));
 
 app.use((req, res, next) => {
     if (req.originalUrl.startsWith('/download')) {
@@ -27,6 +32,7 @@ app.use('/download', express.static('public'));
 app.use('/trello', trelloRouter);
 app.use('/github', githubRouter);
 app.use('/docs', docRouter);
+app.use('/upload', fileUploadService);
 
 if (process.env.NODE_ENV === 'production') {
     const privateKey = fs.readFileSync('../certs/privkey.pem', 'utf8');

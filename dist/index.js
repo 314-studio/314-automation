@@ -9613,7 +9613,7 @@ async function _sendRequest (url, method) {
         method: method,
         headers: headers
     }).catch(async err => {
-        console.error('M2M API Error:', await err.response.text(), err);
+        console.error('M2M API Error:', err);
         return;
     });
     return await response.json();
@@ -9651,7 +9651,7 @@ async function createChangeLog (body) {
         headers: headers,
         body: JSON.stringify(body)
     }).catch(async err => {
-        console.error('M2M API Error:', await err.response.text(), err);
+        console.error('M2M API Error:', err);
         return;
     });
     return await response.json();
@@ -9852,8 +9852,9 @@ const workflow = __nccwpck_require__(3287);
 
 const TRELLO_LIST_NAME_UNDER_REVIEW = core.getInput('trello-list-name-under-review', { required: true });
 const TRELLO_LIST_NAME_IN_PROGRESS = core.getInput('trello-list-name-in-progress', { required: true });
-const WORKFLOW_ID = core.getInput('workflow-id', { required: false });
+const M2M_314_WORKFLOW_URL_BASE = core.getInput('m2m-314-automation-base-url', { required: true });
 const BUILD_VERSION = core.getInput('build-version', { required: false });
+const BUILD_FILE_NAME = core.getInput('build-file-name', { required: false });
 
 
 async function _attachUrlToTrelloAndMoveCard (cardId, url, listName) {
@@ -9891,16 +9892,10 @@ async function onPullRequest (cardCustomId, card) {
     const branchName = process.env.BRANCH_NAME;
     const repoOwner = payload.repository.owner.login;
     const repoName = payload.repository.name;
-    if (WORKFLOW_ID) {
+    if (BUILD_FILE_NAME) {
         if (!BUILD_VERSION) {
             core.setFailed(`Workflow run without a build version is not allowed.`);
         }
-        core.info(`Downloading build artifact for workflow ${WORKFLOW_ID}`);
-        const response = await workflowService.downloadArtifact(repoOwner, repoName, WORKFLOW_ID);
-        if (!response.success) {
-            core.setFailed(`Download failed, ${JSON.stringify(response)}`);
-        }
-        core.info(`Download successful, result: ${JSON.stringify(response)}`);
         
         const changeLogBody = {
             repo: {
@@ -9914,9 +9909,9 @@ async function onPullRequest (cardCustomId, card) {
             },
             release: {
                 version: BUILD_VERSION,
-                fileName: response.name,
-                url: response.url,
-                headSha: response.head
+                fileName: BUILD_FILE_NAME,
+                url: `${M2M_314_WORKFLOW_URL_BASE}/download/${BUILD_FILE_NAME}`,
+                headSha: payload.pull_request.head.sha
             },
             pr: {
                 name: payload.pull_request.body,

@@ -16,6 +16,7 @@ router.post('/owner/:owner/repo/:repo/workflow/:workflowId/artifact/latest/downl
     var artifact = await githubService.getLastestArtifact(owner, repo, req.params.workflowId);
     if (!artifact) {
         res.json({ success: false, msg: `Cannot found artifact build by workflow run ${req.params.workflowId}` });
+        return;
     }
     var result = await githubService.downloadAndHostArtifact(owner, repo, artifact.id, artifact.name);
     result.head = artifact.workflow_run.head_sha;
