@@ -49,7 +49,6 @@ async function onPullRequest (cardCustomId, card) {
         if (!BUILD_VERSION) {
             core.setFailed(`Workflow run without a build version is not allowed.`);
         }
-        console.log(payload.pull_request);
         
         const changeLogBody = {
             repo: {
