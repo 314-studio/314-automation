@@ -37,7 +37,7 @@ jobs:
             PATH=$PATH:/home/${{ secrets.M2M_314_AUTOMATION_SERVER_USERNAME }}/.nvm/versions/node/v18.14.0/bin
             cd /home/${{ secrets.M2M_314_AUTOMATION_SERVER_USERNAME }}/apps/314-automation
             forever stop api.314.js
-            git switch main
+            git switch RLS-31-fix-bugs
             git pull
             npm install
             NODE_ENV=production forever start api.314.js
