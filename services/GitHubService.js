@@ -17,6 +17,7 @@ async function addPrComment(owner, repo, issueNumber, comment) {
 };
 
 async function getLastestArtifact(owner, repo, workflowRunId) {
+    console.log(owner, repo, workflowRunId);
     const response = await octokit.request(
         'GET /repos/{owner}/{repo}/actions/artifacts?per_page={perPage}&page={page}',
         {
@@ -26,6 +27,7 @@ async function getLastestArtifact(owner, repo, workflowRunId) {
             page: '1'
         }
     );
+    console.log(response);
     return response.data.artifacts.find(it => it.workflow_run.id.toString() === workflowRunId);
 }
 
