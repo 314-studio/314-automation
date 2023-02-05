@@ -8,7 +8,7 @@ const GITHUB_OWNER = githubRepoOwner[0];
 const GITHUB_REPO = githubRepoOwner[1];
 
 async function addPrComment(issueNumber, comment) {
-    console.log(issueNumber, comment);
+    console.log(GITHUB_OWNER, GITHUB_REPO)
     const baseIssuesArgs = {
         owner: GITHUB_OWNER,
         repo: GITHUB_REPO,
