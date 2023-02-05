@@ -3,9 +3,8 @@ const octokit = new Octokit({ auth: process.env.GITHUB_TOKEN });
 const fetch = require('node-fetch');
 const fs = require('fs');
 
-console.log(process.env.GITHUB_TOKEN);
-
 async function addPrComment(owner, repo, issueNumber, comment) {
+    console.log(process.env.GITHUB_TOKEN);
     const baseIssuesArgs = {
         owner: owner,
         repo: repo,
