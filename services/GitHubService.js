@@ -19,6 +19,7 @@ async function addPrComment(owner, repo, issueNumber, comment) {
 };
 
 async function getLastestArtifact(owner, repo, workflowRunId) {
+    console.log('get artifacts')
     const response = await octokit.request(
         'GET /repos/{owner}/{repo}/actions/artifacts?per_page={perPage}&page={page}',
         {
@@ -32,6 +33,7 @@ async function getLastestArtifact(owner, repo, workflowRunId) {
 }
 
 async function downloadAndHostArtifact(owner, repo, artifactId, artifactName) {
+    console.log('download artifact')
     const response = await octokit.request('GET /repos/{owner}/{repo}/actions/artifacts/{artifact_id}/{archive_format}', {
         owner: owner,
         repo: repo,
@@ -53,6 +55,8 @@ async function downloadAndHostArtifact(owner, repo, artifactId, artifactName) {
 }
 
 async function getPrCommitsByUrl (url) {
+    console.log('pr comment')
+    console.log(process.env.GITHUB_TOKEN);
     var response = await fetch(url, {
         method: 'GET',
         headers: {
@@ -60,7 +64,7 @@ async function getPrCommitsByUrl (url) {
             Accept: 'application/vnd.github+json'
         }
     }).catch(async err => {
-        console.error('M2M API Error:', await err.response.text(), err);
+        console.error('M2M API Error:', err);
         return;
     });
     return await response.json();

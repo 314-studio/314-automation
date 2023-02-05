@@ -9613,7 +9613,7 @@ async function _sendRequest (url, method) {
         method: method,
         headers: headers
     }).catch(async err => {
-        console.error('M2M API Error:', await err.response.text(), err);
+        console.error('M2M API Error:', err);
         return;
     });
     return await response.json();
@@ -9651,7 +9651,7 @@ async function createChangeLog (body) {
         headers: headers,
         body: JSON.stringify(body)
     }).catch(async err => {
-        console.error('M2M API Error:', await err.response.text(), err);
+        console.error('M2M API Error:', err);
         return;
     });
     return await response.json();
