@@ -27,7 +27,7 @@ jobs:
           TRELLO_BOARD_ID: ${{ vars.TRELLO_BOARD_ID }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           M2M_314_AUTOMATION_SECRET: ${{ secrets.M2M_314_AUTOMATION_SECRET }}
-          GITHUB_REPO: ${ GITHUB_REPOSITORY }
+          GITHUB_REPO: ${ github.repository }
         with:
           host: ${{ secrets.M2M_314_AUTOMATION_SERVER_HOST }}
           username: ${{ secrets.M2M_314_AUTOMATION_SERVER_USERNAME }}
