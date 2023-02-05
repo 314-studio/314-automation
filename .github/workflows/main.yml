@@ -28,16 +28,20 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.ITUSER_GITHUB_TOKEN }}
           M2M_314_AUTOMATION_SECRET: ${{ secrets.M2M_314_AUTOMATION_SECRET }}
           M2M_314_WORKFLOW_URL_BASE: ${{ secrets.M2M_314_WORKFLOW_URL_BASE}}
+          M2M_314_DOCS_API_BASE: ${{ secrets.M2M_314_DOCS_API_BASE }}
+          M2M_314_DOCS_API_TOKEN: ${{ secrets.M2M_314_DOCS_API_TOKEN }}
+          CHANGE_LOG_DOC_ID: ${{ vars.CHANGE_LOG_DOC_ID }}
         with:
           host: ${{ secrets.M2M_314_AUTOMATION_SERVER_HOST }}
           username: ${{ secrets.M2M_314_AUTOMATION_SERVER_USERNAME }}
           key: ${{ secrets.M2M_314_AUTOMATION_SERVER_KEY }}
           port: ${{ secrets.M2M_314_AUTOMATION_SERVER_PORT }}
-          envs: TRELLO_API_KEY,TRELLO_TOKEN,TRELLO_API_BASE_URL,TRELLO_BOARD_ID,GITHUB_TOKEN,M2M_314_AUTOMATION_SECRET,M2M_314_WORKFLOW_URL_BASE
+          envs: TRELLO_API_KEY,TRELLO_TOKEN,TRELLO_API_BASE_URL,TRELLO_BOARD_ID,GITHUB_TOKEN,M2M_314_AUTOMATION_SECRET,M2M_314_WORKFLOW_URL_BASE,M2M_314_DOCS_API_BASE,M2M_314_DOCS_API_TOKEN,CHANGE_LOG_DOC_ID
           script: |
             PATH=$PATH:/home/${{ secrets.M2M_314_AUTOMATION_SERVER_USERNAME }}/.nvm/versions/node/v18.14.0/bin
             cd /home/${{ secrets.M2M_314_AUTOMATION_SERVER_USERNAME }}/apps/314-automation
             forever stop api.314.js
+            git fetch
             git switch RLS-31-fix-bugs
             git pull
             npm install
