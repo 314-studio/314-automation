@@ -4,7 +4,7 @@ const fetch = require('node-fetch');
 const fs = require('fs');
 
 async function addPrComment(owner, repo, issueNumber, comment) {
-    console.log(process.env.GITHUB_TOKEN);
+    console.log('add pr comment: ', process.env.GITHUB_TOKEN);
     const baseIssuesArgs = {
         owner: owner,
         repo: repo,
