@@ -9634,13 +9634,13 @@ async function moveCardToList (cardId, listName) {
     return await _sendRequest(url, 'POST');
 }
 
-async function addPrComment (issueNumber, comment) {
-    var url = `${M2M_314_WORKFLOW_URL_BASE}/github/issue/${issueNumber}/comments?comment=${comment}`;
+async function addPrComment (owner, repo, issueNumber, comment) {
+    var url = `${M2M_314_WORKFLOW_URL_BASE}/github/owner/${owner}/repo/${repo}/issue/${issueNumber}/comments?comment=${comment}`;
     return await _sendRequest(url, 'POST');
 }
 
-async function downloadArtifact (workflowId) {
-    var url = `${M2M_314_WORKFLOW_URL_BASE}/workflow/${workflowId}/artifact/latest/download`;
+async function downloadArtifact (owner, repo, workflowId) {
+    var url = `${M2M_314_WORKFLOW_URL_BASE}/github/owner/${owner}/repo/${repo}/workflow/${workflowId}/artifact/latest/download`;
     return await _sendRequest(url, 'POST');
 }
 
@@ -9889,18 +9889,24 @@ async function onPullRequest (cardCustomId, card) {
     var result = {}
     const payload = github.context.payload;
     const branchName = process.env.BRANCH_NAME;
+    const repoOwner = payload.repository.owner.login;
+    const repoName = payload.repository.name;
     if (WORKFLOW_ID) {
         if (!BUILD_VERSION) {
             core.setFailed(`Workflow run without a build version is not allowed.`);
         }
         core.info(`Downloading build artifact for workflow ${WORKFLOW_ID}`);
-        const response = await workflowService.downloadArtifact(WORKFLOW_ID);
+        const response = await workflowService.downloadArtifact(repoOwner, repoName, WORKFLOW_ID);
         if (!response.success) {
             core.setFailed(`Download failed, ${JSON.stringify(response)}`);
         }
         core.info(`Download successful, result: ${JSON.stringify(response)}`);
         
         const changeLogBody = {
+            repo: {
+                owner: repoOwner,
+                name: repoName
+            },
             branch: {
                 name: branchName,
                 url: `${payload.repository.html_url}/tree/${branchName}`,
@@ -9934,8 +9940,8 @@ async function onPullRequest (cardCustomId, card) {
     core.info(`PR created, Branch name: ${cardCustomId}, pull request URL: ${payload.pull_request.html_url}`);
     result = await _attachUrlToTrelloAndMoveCard(card.id, payload.pull_request.html_url, TRELLO_LIST_NAME_UNDER_REVIEW);
     // if (payload.action === 'opened') {
-        await workflow.addPrComment(payload.pull_request.number, _buildTrelloLinkComment(card));
-    // }
+        await workflow.addPrComment(repoOwner, repoName, payload.pull_request.number, _buildTrelloLinkComment(card));
+    // } // todo core.error if failed
     return result;
 }
 
