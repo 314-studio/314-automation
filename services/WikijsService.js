@@ -12,7 +12,7 @@ const wikiCLient = new GraphQLClient(M2M_314_DOCS_API_BASE, {
     }
 });
 async function addNewRelease(body) {
-    const version = body.release.version;
+    const cardId = body.trello.customId;
     const commits = await githubService.getPrCommitsByUrl(body.branch.commitsUrl);
 
     if (body.release && body.release.fileName) {
@@ -26,8 +26,8 @@ async function addNewRelease(body) {
     }
 
     const $ = cheerio.load(response.pages.single.content);
-    if ($(`section[id="${version}"]`).html()) {
-        const minorReleaseUl = $(`section[id="${version}"] ul`);
+    if ($(`section[id="${cardId}"]`).html()) {
+        const minorReleaseUl = $(`section[id="${cardId}"] ul`);
         for (commit of commits.reverse()) {
             if ($(`#${commit.sha}`, minorReleaseUl).html()) {
                 continue;
@@ -44,7 +44,7 @@ async function addNewRelease(body) {
         const html = _buildMajorReleaseHTML(body);
         $('body').prepend(html);
 
-        const minorReleaseUl = $(`section[id="${version}"] ul`);
+        const minorReleaseUl = $(`section[id="${cardId}"] ul`);
         for (commit of commits.reverse()) {
             var minorHTML = '';
             if (commit.sha === body.release.headSha) {
@@ -64,8 +64,8 @@ async function addNewRelease(body) {
 
 function _buildMajorReleaseHTML (body) {
     const html = `
-    <section id="${body.release.version}">
-        <h2>v.${body.release.version}</h2>
+    <section id="${cardId}">
+        <h1>v${body.release.version}</h1>
         <p>
             分支 <a href="${body.branch.url}">${body.branch.name}</a><br>
             拉取请求 <a href="${body.pr.url}">${body.pr.name}</a><br>
