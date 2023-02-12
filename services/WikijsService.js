@@ -64,7 +64,7 @@ async function addNewRelease(body) {
 
 function _buildMajorReleaseHTML (body) {
     const html = `
-    <section id="${cardId}">
+    <section id="${body.trello.customId}">
         <h1>v${body.release.version}</h1>
         <p>
             分支 <a href="${body.branch.url}">${body.branch.name}</a><br>
