@@ -42,10 +42,10 @@ async function addNewRelease(body) {
         }
     } else {
         const html = _buildMajorReleaseHTML(body);
-        $('body').append(html);
+        $('body').prepend(html);
 
         const minorReleaseUl = $(`section[id="${version}"] ul`);
-        for (commit of commits) {
+        for (commit of commits.reverse()) {
             var minorHTML = '';
             if (commit.sha === body.release.headSha) {
                 minorHTML = _buildMinorReleaseHTML(commit, body.release);
@@ -65,7 +65,7 @@ async function addNewRelease(body) {
 function _buildMajorReleaseHTML (body) {
     const html = `
     <section id="${body.release.version}">
-        <h2>${body.release.version}</h2>
+        <h2>v.${body.release.version}</h2>
         <p>
             分支 <a href="${body.branch.url}">${body.branch.name}</a><br>
             拉取请求 <a href="${body.pr.url}">${body.pr.name}</a><br>
