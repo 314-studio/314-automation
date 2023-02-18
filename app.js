@@ -72,7 +72,8 @@ async function onPullRequest (cardCustomId, card) {
             },
             trello: {
                 title: card.name,
-                url: card.url
+                url: card.url,
+                customId: cardCustomId
             }
         }
 
